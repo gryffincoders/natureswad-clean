@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "907568434113",
+    "project_id": "natureswad-3d6aa",
+    "storage_bucket": "natureswad-3d6aa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:907568434113:android:0d17768a4ac08a965b3d40",
+        "android_client_info": {
+          "package_name": "com.natureswad"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-HVBGqP-pR8QjaNxav6M17YzlvYka1OE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
