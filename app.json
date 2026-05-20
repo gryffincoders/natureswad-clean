@@ -7,35 +7,45 @@
     "icon": "./assets/natureswad.png",
     "scheme": "natureswad",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+
+    "newArchEnabled": false,
+
     "ios": {
       "supportsTablet": true,
       "icon": "./assets/natureswad.png",
       "bundleIdentifier": "com.natureswad",
       "googleServicesFile": "./GoogleService-Info.plist",
+
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
     },
+
     "android": {
       "icon": "./assets/natureswad.png",
       "package": "com.natureswad",
       "googleServicesFile": "./google-services.json",
+
       "adaptiveIcon": {
         "foregroundImage": "./assets/natureswad.png",
         "backgroundColor": "#E6F4FE"
       },
+
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
+
     "web": {
       "output": "static",
       "favicon": "./assets/natureswad.png"
     },
+
     "plugins": [
       "expo-router",
+
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
+
       [
         "expo-splash-screen",
         {
@@ -43,34 +53,40 @@
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
+
           "dark": {
             "backgroundColor": "#000000"
           }
         }
       ],
+
       [
         "expo-build-properties",
         {
           "ios": {
-            "useFrameworks": "static",
-            "extraPodfileConfig": "pre_install do |installer|\n  installer.pod_targets.each do |target|\n    if target.respond_to?(:attributes_hash)\n      target.attributes_hash['compiler_flags'] = '-Wno-error=non-modular-include-in-framework-module'\n    end\n  end\nend"
+            "useFrameworks": "static"
           },
+
           "android": {
             "usesCleartextTraffic": true
           }
         }
       ]
     ],
+
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
     },
+
     "extra": {
       "router": {},
+
       "eas": {
         "projectId": "52fe73ce-3d97-4540-af09-1b99dc43a010"
       }
     },
+
     "owner": "natureswad"
   }
 }
