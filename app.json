@@ -7,7 +7,7 @@
     "icon": "./assets/natureswad.png",
     "scheme": "natureswad",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true,
       "icon": "./assets/natureswad.png",
@@ -34,7 +34,6 @@
     },
     "plugins": [
       "expo-router",
-      "./plugins/withAllowNonModularIncludes",
       "@react-native-firebase/app",
       "@react-native-firebase/auth",
       [
