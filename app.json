@@ -7,7 +7,7 @@
     "icon": "./assets/natureswad.png",
     "scheme": "natureswad",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": false,
+    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "icon": "./assets/natureswad.png",
@@ -52,7 +52,8 @@
         "expo-build-properties",
         {
           "ios": {
-            "useFrameworks": "static"
+            "useFrameworks": "static",
+            "extraPodfileConfig": "pre_install do |installer|\n  installer.pod_targets.each do |target|\n    if target.respond_to?(:attributes_hash)\n      target.attributes_hash['compiler_flags'] = '-Wno-error=non-modular-include-in-framework-module'\n    end\n  end\nend"
           },
           "android": {
             "usesCleartextTraffic": true
