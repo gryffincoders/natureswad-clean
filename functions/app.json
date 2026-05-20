@@ -1,0 +1,8 @@
+{
+  "android": {
+    "package": "com.natureswad.functions"
+  },
+  "ios": {
+    "bundleIdentifier": "com.natureswad.functions"
+  }
+}
