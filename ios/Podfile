@@ -54,6 +54,12 @@ target 'Natureswad' do
     # Fix Folly coroutine issue
     installer.pods_project.targets.each do |target|
       if target.name == 'RCT-Folly'
+
+        target.build_configurations.each do |config|
+          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
+          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'FOLLY_HAS_COROUTINES=0'
+        end
+
         target.source_build_phase.files.each do |file|
           if file.settings && file.settings['COMPILER_FLAGS']
             flags = file.settings['COMPILER_FLAGS'].split
@@ -62,6 +68,7 @@ target 'Natureswad' do
             file.settings['COMPILER_FLAGS'] = flags.join(' ')
           end
         end
+
       end
     end
   end
