@@ -20,11 +20,7 @@ react {
             .trim()
     ).getParentFile()
 
-    hermesCommand = new File(
-        reactNativeDir,
-        "sdks/hermesc/%OS-BIN%/hermesc"
-    ).absolutePath
-
+    hermesCommand = reactNativeDir.getAbsolutePath() + "/sdks/hermesc/%OS-BIN%/hermesc"
     codegenDir = new File(
         ["node", "--print", "require.resolve('@react-native/codegen/package.json')"]
             .execute(null, rootDir)
