@@ -20,19 +20,7 @@ prepare_react_native_project!
 target 'Natureswad' do
   use_expo_modules!
 
-  config_command = [
-    'node',
-    '--no-warnings',
-    '--eval',
-    'require(\'expo/bin/autolinking\')',
-    'expo-modules-autolinking',
-    'react-native-config',
-    '--json',
-    '--platform',
-    'ios'
-  ]
-
-  config = use_native_modules!(config_command)
+  config = use_native_modules!
 
   use_frameworks! :linkage => :static
 
@@ -40,7 +28,7 @@ target 'Natureswad' do
     :path => config[:reactNativePath],
     :hermes_enabled => true,
     :app_path => "#{Pod::Config.instance.installation_root}/..",
-    :privacy_file_aggregation_enabled => podfile_properties['apple.privacyManifestAggregationEnabled'] != 'false',
+    :privacy_file_aggregation_enabled => true,
   )
 
   post_install do |installer|
