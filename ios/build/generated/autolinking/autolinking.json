@@ -267,7 +267,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/avijitmohan/natureswad-clean/node_modules/react-native-reanimated/RNReanimated.podspec",
-          "version": "3.17.5",
+          "version": "4.1.1",
           "configurations": [],
           "scriptPhases": []
         },
@@ -372,6 +372,31 @@
             "RNCWebViewComponentDescriptor"
           ],
           "cmakeListsPath": "/Users/avijitmohan/natureswad-clean/node_modules/react-native-webview/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
+    "react-native-worklets": {
+      "root": "/Users/avijitmohan/natureswad-clean/node_modules/react-native-worklets",
+      "name": "react-native-worklets",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/avijitmohan/natureswad-clean/node_modules/react-native-worklets/RNWorklets.podspec",
+          "version": "0.5.1",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/avijitmohan/natureswad-clean/node_modules/react-native-worklets/android",
+          "packageImportPath": "import com.swmansion.worklets.WorkletsPackage;",
+          "packageInstance": "new WorkletsPackage()",
+          "buildTypes": [],
+          "libraryName": "rnworklets",
+          "componentDescriptors": [],
+          "cmakeListsPath": "/Users/avijitmohan/natureswad-clean/node_modules/react-native-worklets/android/build/generated/source/codegen/jni/CMakeLists.txt",
           "cxxModuleCMakeListsModuleName": null,
           "cxxModuleCMakeListsPath": null,
           "cxxModuleHeaderName": null,
