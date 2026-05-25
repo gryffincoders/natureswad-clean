@@ -17,8 +17,9 @@
       "googleServicesFile": "./GoogleService-Info.plist",
 
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
-      }
+      "ITSAppUsesNonExemptEncryption": false,
+      "NSPhotoLibraryUsageDescription": "Natureswad needs access to your photo library so users can upload profile pictures, food images, and related content."
+}
     },
 
     "android": {

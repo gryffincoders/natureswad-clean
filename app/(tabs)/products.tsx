@@ -20,9 +20,6 @@ import { PRODUCTS } from '../../src/constants/productsData';
 
 const { width } = Dimensions.get('window');
 
-// ---------- DYNAMIC DATA PROCESSING (SEO UPDATED) ----------
-
-// SEO Keyword infused category descriptions
 const CATEGORY_DESCRIPTIONS: { [key: string]: string } = {
   'Atta & Grains': 'Buy organic atta online, low GI flours, and the best millets for diabetes.',
   'Pulses & Dals': 'Buy organic dal online India. Protein-rich, chemical-free pulses for daily nutrition.',
@@ -30,7 +27,6 @@ const CATEGORY_DESCRIPTIONS: { [key: string]: string } = {
   'Combo': 'Healthy breakfast mix India. The perfect gluten-free gifts for your family.',
 };
 
-// Process the raw PRODUCTS object into grouped sections
 const getGroupedProducts = () => {
   const groups: { [key: string]: any[] } = {};
   
@@ -54,7 +50,6 @@ const getGroupedProducts = () => {
   return { sections, categories };
 };
 
-// ---------- ANIMATED SECTION ----------
 const FadeInView = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => {
   const opacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(30)).current;
@@ -84,7 +79,7 @@ const FadeInView = ({ children, delay = 0 }: { children: React.ReactNode; delay?
   );
 };
 
-// ---------- MODERN PRODUCT CARD ----------
+// ---------- MODERN PRODUCT CARD (FIXED FOR iOS ELEMENT CLIPPING) ----------
 const ProductCard = ({ item }: { item: any }) => {
   const router = useRouter();
   const { toggleWishlistItem, isInWishlist } = useWishlist();
@@ -95,7 +90,6 @@ const ProductCard = ({ item }: { item: any }) => {
   const displayImage = item.image || (item.images && item.images[0]);
   const displayPrice = item.variants && item.variants.length > 0 ? item.variants[0].price : '';
 
-  // SEO TITLE SPLITTER - UI ONLY SHOWS THE CLEAN NAME
   const rawText = item.name ? item.name.replace(/[\[\]]/g, '') : '';
   const displayTitle = rawText.split('|')[0].trim();
 
@@ -141,8 +135,8 @@ const ProductCard = ({ item }: { item: any }) => {
           <View style={styles.imageOverlay} />
         </View>
 
+        {/* REMOVED FLEX: 1 MIXINS, USING AUTOGROW CONTENT FOR iOS BASELINES */}
         <View style={styles.cardContent}>
-          {/* Displaying the split, clean title */}
           <Text style={styles.productName} numberOfLines={2}>
             {displayTitle}
           </Text>
@@ -163,7 +157,6 @@ const ProductCard = ({ item }: { item: any }) => {
   );
 };
 
-// ---------- MAIN SCREEN ----------
 export default function ProductsScreen() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const router = useRouter();
@@ -218,7 +211,6 @@ export default function ProductsScreen() {
       >
         <FadeInView delay={50}>
           <View style={styles.heroSection}>
-            {/* SEO UPDATE: Replaced "Our Offerings" */}
             <Text style={styles.pageTitle}>Buy Organic Food India</Text>
             <View style={styles.divider} />
             <Text style={styles.pageSubTitle}>
@@ -259,7 +251,6 @@ export default function ProductsScreen() {
   );
 }
 
-// ---------- STYLES ----------
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
@@ -407,19 +398,21 @@ const styles = StyleSheet.create({
   },
   cardWrapper: {
     marginRight: 16,
+    // FIX: Add minimal vertical padding to prevent the top shadow from getting clipped by FlatList frame
+    paddingVertical: 4, 
   },
+  // FIX: Shifted to a safe minHeight instead of a rigid fixed height rule to let iOS fit layout components safely
   cardContainer: {
     width: 200,
-    height: 280, 
+    minHeight: 295, 
     borderRadius: 24,
     backgroundColor: '#FFFFFF',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.05,
-    shadowRadius: 15,
+    shadowRadius: 12,
     elevation: 4,
     padding: 12,
-    justifyContent: 'space-between',
     borderWidth: 1,
     borderColor: 'rgba(0,0,0,0.02)',
   },
@@ -461,20 +454,20 @@ const styles = StyleSheet.create({
     height: '40%',
     backgroundColor: 'rgba(0,0,0,0.03)',
   },
+  // FIX: Structural auto-growth padding definitions for text groups
   cardContent: {
-    marginTop: 10,
-    flex: 1,
-    justifyContent: 'flex-end',
+    marginTop: 12,
+    justifyContent: 'space-between',
   },
   productName: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '700',
     color: '#222',
-    marginBottom: 6,
-    lineHeight: 20,
+    minHeight: 40, // Ensures 2 lines of spacing are always structurally empty/ready
+    lineHeight: 19,
   },
   productPrice: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '800',
     color: '#1B5E20',
   },
@@ -482,7 +475,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 6,
+    marginTop: 8,
   },
   addButton: {
     backgroundColor: '#F1F8E9',

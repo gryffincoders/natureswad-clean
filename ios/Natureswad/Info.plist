@@ -60,13 +60,19 @@
 		<true/>
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Allow $(PRODUCT_NAME) to access your location</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Allow $(PRODUCT_NAME) to access your location</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Allow $(PRODUCT_NAME) to access your location</string>
-	<key>NSUserActivityTypes</key>
-	<array>
+<string>Allow $(PRODUCT_NAME) to access your location</string>
+
+<key>NSLocationAlwaysUsageDescription</key>
+<string>Allow $(PRODUCT_NAME) to access your location</string>
+
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Allow $(PRODUCT_NAME) to access your location</string>
+
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Natureswad needs access to your photo library so users can upload profile pictures, food images, and related content.</string>
+
+<key>NSUserActivityTypes</key>
+<array>
 		<string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
 	</array>
 	<key>RCTNewArchEnabled</key>
