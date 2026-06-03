@@ -9,52 +9,47 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PRODUCTS } from '../../src/constants/productsData';
 
-// ✅ Properly imported global header
+// Global header temp component
 import HeaderTemp from '../components/HeaderTemp'; 
 
 const { width } = Dimensions.get('window');
 
-// --- BOT KNOWLEDGE BASE ---
+// --- BOT KNOWLEDGE BASE MATCHING UPDATED SEMANTIC SCHEMAS ---
 const BOT_KNOWLEDGE: Record<string, { text: string; mealIdeas: string; products: string[] }> = {
   'Diabetes Management': {
     text: "For managing diabetes, the best foods are low GI, high fiber, and high protein. High fiber slows glucose absorption, keeping your blood sugar stable!",
-    mealIdeas: "• Ragi dosa\n• Foxtail millet upma\n• Multi millet roti\n• Moong dal soup",
-    products: ['m4', 'm3', 'm5', 'm6', 'm2', 'a2', 'f2', 'p2', 'p7', 's3', 'h1'] 
+    mealIdeas: "• Multi Millet Idli\n• Multi Millet Jowar Daliya\n• Sugar Management Atta\n• Diabetic-Friendly Millet Mix",
+    products: ['wn_sugar_atta', 'wn_diabetic_mix', 'b1', 'rtc_khichdi', 'rtc_dosa', 'f4'] 
   },
   'Nursing Mothers': {
     text: "Congratulations! Nursing mothers need high calcium, iron, protein, and energy to support bone health. Here are nature's best supplements.",
-    mealIdeas: "• Ragi porridge\n• Sesame laddu\n• Moong dal khichdi\n• Emmer wheat roti",
-    products: ['m5', 'p1', 'p6', 'p7', 'a2', 'g2', 's2', 'h2'] 
+    mealIdeas: "• Sprouted Ragi Malt\n• Multi Millet Jaggery Laddu\n• Multi Millet Adai Mix\n• Whole Grain Crispy Rusk",
+    products: ['trad_ragi_malt', 'snk_laddu', 'rtc_adai', 'cv_rusk', 'wn_baby_food'] 
   },
   'Kids Growth': {
     text: "Growing kids require high protein, calcium, and essential minerals to support bone development, muscle growth, and immunity.",
-    mealIdeas: "• Ragi malt\n• Multi millet dosa\n• Peanut chutney\n• Moong dal khichdi",
-    products: ['m5', 'm8', 'p1', 'p7', 'p6', 'p5', 'h5', 'b1', 'h2'] 
+    mealIdeas: "• Multi Millet Noodles\n• Multi Millet Macaroni\n• Sprouted Ragi Porridge\n• Nutritious Millet Cookies",
+    products: ['cv_noodles', 'cv_macaroni', 'wn_baby_food', 'snk_cookies', 'hb_pancake', 'b1'] 
+  },
+  'Nursing/Senior Care': {
+    text: "For aging individuals, easily digestible bone minerals, high-absorption proteins, and joint-supporting herbs are required to fuel physical baselines.",
+    mealIdeas: "• Senior Citizen Drink Mix\n• Healthy Millet Kanji Mix\n• Lightweight Millet Ganji porridge",
+    products: ['wn_senior_mix', 'trad_inst_kanji', 'trad_ganji', 'rtc_khichdi']
   },
   'Weight Loss': {
     text: "For healthy weight loss, you need low-calorie, high-fiber, and high-satiety foods. High fiber keeps your stomach full longer, reducing cravings!",
-    mealIdeas: "• Millet salad bowl\n• Horse gram soup\n• Flaxseed chutney with jowar roti",
-    products: ['m3', 'm4', 'm6', 'm2', 'p3', 'p2', 's1', 's3']
+    mealIdeas: "• Weight Management Mix\n• Crispy Sorghum Roasted Snacks\n• High Satiety Millet Khakhra",
+    products: ['wn_weight_mix', 'snk_roasted', 'snk_khakhra', 'rtc_soup', 'hb_muesli']
   },
-  'Weight Gain': {
-    text: "To gain weight healthily, focus on calorie-dense foods rich in healthy fats and proteins. No junk needed!",
-    mealIdeas: "• Peanut laddu\n• Sesame chikki\n• Urad dal dosa\n• Bajra roti with ghee",
-    products: ['p1', 'p6', 'm8', 's2', 'ch_group', 'po5', 'h2']
+  'Thyroid & Hormonal Support': {
+    text: "For thyroid support, your body needs trace selenium, zinc, and specialized hormone-balancing adaptogens to help maintain steady metabolism baselines.",
+    mealIdeas: "• Women’s Health Drink Mix\n• Aromatic Millet Khichdi\n• High-Protein Nutrition Drink",
+    products: ['wn_women_mix', 'rtc_khichdi', 'wn_protein_mix', 'rtc_soup']
   },
-  'Thyroid Support': {
-    text: "For thyroid support, your body needs selenium, zinc, and anti-inflammatory foods to help maintain hormonal balance and metabolism. ",
-    mealIdeas: "• Millet khichdi\n• Chickpea salad\n• Flaxseed chutney",
-    products: ['m4', 'm7', 'p1', 'p5', 's1', 's4', 'h1']
-  },
-  'Blood Pressure Control': {
-    text: "To control blood pressure, load up on high potassium, high fiber, and low sodium foods. These maintain heart health and fluid balance. ",
-    mealIdeas: "• Jowar roti\n• Moong dal soup\n• Millet vegetable bowl",
-    products: ['m7', 'g1', 'm5', 'p2', 'p7', 's1', 'h1']
-  },
-  'Heart Health': {
-    text: "Protect your heart with ingredients rich in omega-3 fatty acids, complex carbohydrates, and dietary fiber to control cholesterol. ",
-    mealIdeas: "• Light millet upma\n• Green gram sprouts\n• Meals cooked in cold-pressed oils",
-    products: ['s1', 'm4', 'm6', 'm7', 'p2', 'p5', 'po5']
+  'Heart Health & Convenience': {
+    text: "Protect your heart with complex carbohydrates, low sodium parameters, and dietary fiber designed to balance internal fat absorption indexes cleanly.",
+    mealIdeas: "• Multi Millet Muesli\n• Oven-Toasted Granola\n• Ready-to-Eat Wholesome Millet Pouch",
+    products: ['hb_muesli', 'hb_granola', 'cv_rte_meals', 'rtc_pongal', 'snk_bars']
   }
 };
 
@@ -103,10 +98,14 @@ export default function NatureswadBot() {
     return (
       <View key={product.id} style={styles.miniProductCard}>
         <View style={styles.miniImageWrapper}>
-          <Image source={displayImage} style={styles.miniImage} resizeMode="contain" />
+          {displayImage ? (
+            <Image source={displayImage} style={styles.miniImage} resizeMode="contain" />
+          ) : (
+            <Ionicons name="leaf" size={24} color="#CCCCCC" />
+          )}
         </View>
         <Text style={styles.miniProductName} numberOfLines={2}>{cleanName}</Text>
-        <Text style={styles.miniProductPrice}>{product.variants?.[0]?.price}</Text>
+        <Text style={styles.miniProductPrice}>{product.variants?.[0]?.price || 'N/A'}</Text>
         
         <TouchableOpacity 
           style={styles.ctaButton} 
@@ -126,7 +125,7 @@ export default function NatureswadBot() {
       <View style={[styles.bgBlob, styles.blob1]} />
       <View style={[styles.bgBlob, styles.blob2]} />
 
-      {/* ✅ Global Header with Back Button Enabled */}
+      {/* Global Header with Back Button Enabled */}
       <HeaderTemp showBack={true} />
 
       <ScrollView 
@@ -135,7 +134,7 @@ export default function NatureswadBot() {
         contentContainerStyle={styles.chatContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* ✅ Bot Profile Header inside the ScrollView */}
+        {/* Bot Profile Header inside the ScrollView */}
         <View style={styles.botProfileContainer}>
           <View style={styles.botProfileIcon}>
             <Ionicons name="leaf" size={36} color="#1B5E20" />
@@ -149,7 +148,7 @@ export default function NatureswadBot() {
             
             {msg.sender === 'bot' && (
               <View style={styles.botAvatar}>
-                <Image source={require('../../assets/icon.png')} style={{ width: 24, height: 24 }} resizeMode="contain" />
+                <Ionicons name="leaf" size={16} color="#1B5E20" />
               </View>
             )}
 
@@ -208,7 +207,6 @@ const styles = StyleSheet.create({
   chatArea: { flex: 1 },
   chatContent: { padding: 16, paddingBottom: 40 },
 
-  // ✅ New Bot Profile Styles (Appears at the top of the chat)
   botProfileContainer: {
     alignItems: 'center',
     marginTop: 10,
@@ -265,9 +263,9 @@ const styles = StyleSheet.create({
   miniImageWrapper: { width: '100%', height: 90, backgroundColor: '#F8F9FA', borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginBottom: 8 },
   miniImage: { width: '80%', height: '80%' },
   miniProductName: { fontSize: 13, fontWeight: '700', color: '#222', marginBottom: 4, lineHeight: 16 },
-  miniProductPrice: { fontSize: 13, fontWeight: '800', color: '#555', marginBottom: 10 },
+  miniProductPrice: { fontSize: 13, fontWeight: '800', color: '#1B5E20', marginBottom: 10 },
   
-  ctaButton: { flexDirection: 'row', backgroundColor: '#F25D23', paddingVertical: 8, borderRadius: 10, justifyContent: 'center', alignItems: 'center' },
+  ctaButton: { flexDirection: 'row', backgroundColor: '#1B5E20', paddingVertical: 8, borderRadius: 10, justifyContent: 'center', alignItems: 'center' },
   ctaButtonText: { color: '#FFF', fontSize: 11, fontWeight: '800', marginRight: 4 },
 
   inputArea: { backgroundColor: '#FFF', paddingTop: 16, borderTopWidth: 1, borderTopColor: 'rgba(0,0,0,0.05)', shadowColor: '#000', shadowOffset: { width: 0, height: -4 }, shadowOpacity: 0.05, shadowRadius: 10, elevation: 10 },
