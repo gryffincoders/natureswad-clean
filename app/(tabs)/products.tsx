@@ -14,6 +14,8 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+// ✅ IMPORT GESTURE HANDLER ROOT TO FIX iOS TOUCH RESPONDER INTERCEPTIONS
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Header from '../components/HeaderTemp';
 import { useWishlist } from '../../src/context/wishlistContext';
 import { PRODUCTS } from '../../src/constants/productsData'; 
@@ -79,7 +81,7 @@ const FadeInView = ({ children, delay = 0 }: { children: React.ReactNode; delay?
   );
 };
 
-// ---------- MODERN PRODUCT CARD (FIXED FOR iOS ELEMENT CLIPPING) ----------
+// ---------- MODERN PRODUCT CARD ----------
 const ProductCard = ({ item }: { item: any }) => {
   const router = useRouter();
   const { toggleWishlistItem, isInWishlist } = useWishlist();
@@ -135,7 +137,6 @@ const ProductCard = ({ item }: { item: any }) => {
           <View style={styles.imageOverlay} />
         </View>
 
-        {/* REMOVED FLEX: 1 MIXINS, USING AUTOGROW CONTENT FOR iOS BASELINES */}
         <View style={styles.cardContent}>
           <Text style={styles.productName} numberOfLines={2}>
             {displayTitle}
@@ -157,7 +158,8 @@ const ProductCard = ({ item }: { item: any }) => {
   );
 };
 
-export default function ProductsScreen() {
+// ---------- PRODUCTS SCREEN INNER MODULE ----------
+function ProductsContent() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const router = useRouter();
   const { getWishlistCount } = useWishlist();
@@ -165,7 +167,7 @@ export default function ProductsScreen() {
   const { sections, categories } = useMemo(() => getGroupedProducts(), []);
 
   return (
-    <View style={styles.mainContainer}>
+    <View style={styles.innerLayoutContainer}>
       <View style={[styles.bgBlob, styles.blob1]} />
       <View style={[styles.bgBlob, styles.blob2]} />
 
@@ -208,6 +210,7 @@ export default function ProductsScreen() {
       <ScrollView 
         showsVerticalScrollIndicator={false} 
         contentContainerStyle={{ paddingBottom: 120 }}
+        keyboardShouldPersistTaps="handled"
       >
         <FadeInView delay={50}>
           <View style={styles.heroSection}>
@@ -251,10 +254,26 @@ export default function ProductsScreen() {
   );
 }
 
+// ✅ WRAPPING SCREEN EXPORT NATIVELY WITH GESTURE HANDLER FOR iOS INTERACTION ROUTING
+export default function ProductsScreen() {
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ProductsContent />
+    </GestureHandlerRootView>
+  );
+}
+
+// ---------- STYLES ----------
 const styles = StyleSheet.create({
+  // ✅ ADDED OVERFLOW VISIBLE AS PER FIX PLAN STEP 2
   mainContainer: {
     flex: 1,
-    backgroundColor: '#F8F9FA', 
+    backgroundColor: '#F8F9FA',
+    overflow: 'visible',
+  },
+  innerLayoutContainer: {
+    flex: 1,
+    overflow: 'visible',
   },
   bgBlob: {
     position: 'absolute',
@@ -398,10 +417,9 @@ const styles = StyleSheet.create({
   },
   cardWrapper: {
     marginRight: 16,
-    // FIX: Add minimal vertical padding to prevent the top shadow from getting clipped by FlatList frame
     paddingVertical: 4, 
   },
-  // FIX: Shifted to a safe minHeight instead of a rigid fixed height rule to let iOS fit layout components safely
+  // ✅ CHANGED TO OVERFLOW VISIBLE AS PER FIX PLAN STEP 3
   cardContainer: {
     width: 200,
     minHeight: 295, 
@@ -415,6 +433,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderWidth: 1,
     borderColor: 'rgba(0,0,0,0.02)',
+    overflow: 'visible',
   },
   likeButton: {
     position: 'absolute',
@@ -433,6 +452,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  // ✅ REMOVED OVERFLOW HIDDEN AS PER FIX PLAN STEP 1
   imageWrapper: {
     height: 140,
     width: '100%',
@@ -440,7 +460,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F8F9FA',
     borderRadius: 16,
-    overflow: 'hidden',
   },
   productImage: {
     width: '85%',
@@ -453,8 +472,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '40%',
     backgroundColor: 'rgba(0,0,0,0.03)',
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
   },
-  // FIX: Structural auto-growth padding definitions for text groups
   cardContent: {
     marginTop: 12,
     justifyContent: 'space-between',
@@ -463,7 +483,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '700',
     color: '#222',
-    minHeight: 40, // Ensures 2 lines of spacing are always structurally empty/ready
+    minHeight: 40, 
     lineHeight: 19,
   },
   productPrice: {
