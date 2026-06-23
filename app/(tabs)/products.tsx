@@ -150,9 +150,9 @@ function ProductsContent() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }} keyboardShouldPersistTaps="handled">
         <FadeInView delay={50}>
           <View style={styles.heroSection}>
-            <Text style={styles.pageTitle}>Buy Organic Food India</Text>
+            <Text style={styles.pageTitle}>Natureswad Food Store</Text>
             <View style={styles.divider} />
-            <Text style={styles.pageSubTitle}>Buy millets online, natural groceries, and chemical-free foods.</Text>
+            <Text style={styles.pageSubTitle}>Explore whole grains, low GI alternatives, and functional dietary mixes.</Text>
           </View>
         </FadeInView>
 
