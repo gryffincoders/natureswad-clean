@@ -26,7 +26,7 @@ const FadeInView = ({ children, delay = 0 }: { children: React.ReactNode, delay?
   return <Animated.View style={{ opacity: fade, transform: [{ translateY: slide }] }}>{children}</Animated.View>;
 };
 
-// Custom Variant Picker Component - Works on both iOS and Android
+// ✅ CUSTOM SEGMENT PICKER COMPONENT - WORKS FLUIDLY ON BOTH iOS AND ANDROID
 const CustomVariantPicker = ({ variants, selectedIndex, onValueChange }: any) => {
   const [showPicker, setShowPicker] = useState(false);
   
@@ -49,7 +49,7 @@ const CustomVariantPicker = ({ variants, selectedIndex, onValueChange }: any) =>
       
       {showPicker && (
         <>
-          {/* Backdrop to close dropdown when tapping outside */}
+          {/* Backdrop hook layers to click away easily */}
           <TouchableOpacity 
             style={styles.dropdownBackdrop} 
             activeOpacity={1} 
@@ -70,7 +70,7 @@ const CustomVariantPicker = ({ variants, selectedIndex, onValueChange }: any) =>
                 }}
               >
                 <View style={styles.customPickerItemContent}>
-                  <View>
+                  <View style={{ flex: 1 }}>
                     <Text style={[
                       styles.customPickerItemLabel,
                       selectedIndex === idx && styles.customPickerItemTextSelected
@@ -85,7 +85,7 @@ const CustomVariantPicker = ({ variants, selectedIndex, onValueChange }: any) =>
                     </Text>
                   </View>
                   {selectedIndex === idx && (
-                    <Ionicons name="checkmark-circle" size={24} color="#1B5E20" />
+                    <Ionicons name="checkmark-circle" size={22} color="#1B5E20" />
                   )}
                 </View>
               </TouchableOpacity>
@@ -103,24 +103,20 @@ export default function ProductDetail() {
   const { addToCart } = useCart(); 
   const insets = useSafeAreaInsets();
   
-  // Safe item target matching block resolution handles fallback gracefully
   const product = useMemo(() => {
     // @ts-ignore
     return PRODUCTS[id] || Object.values(PRODUCTS)[0];
   }, [id]);
 
-  // Dynamically filter, isolate, and structure clean image arrays
+  // Dynamic safely checking filter block for product image variants array structure
   const productImages = useMemo(() => {
     const images = [];
-
     if (product?.images?.length) {
       images.push(...product.images.filter(Boolean));
     }
-
     if (product?.image) {
       images.push(product.image);
     }
-
     return images;
   }, [product]);
 
@@ -143,10 +139,7 @@ export default function ProductDetail() {
     const categoriesFilled = new Set();
 
     allItems.forEach(item => {
-      // Rule 1: Skip active viewing item completely
       if (item.id === product.id) return;
-
-      // Rule 2: Pick alternating category footprints first
       if (!categoriesFilled.has(item.category)) {
         crossCategoryPool.push(item);
         categoriesFilled.add(item.category);
@@ -219,7 +212,7 @@ export default function ProductDetail() {
       
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
         
-        {/* GALLERY IMAGE CAROUSEL */}
+        {/* GALLERY CAROUSEL */}
         <FadeInView>
           <View style={styles.imageContainer}>
             {productImages.length > 0 ? (
@@ -250,7 +243,7 @@ export default function ProductDetail() {
           </View>
         </FadeInView>
 
-        {/* OVERLAPPING DETAIL PANEL SHEET */}
+        {/* DETAILS OVERLAY SHEET PANEL */}
         <View style={styles.contentSheet}>
           <FadeInView delay={100}>
             <View style={styles.titleRow}>
@@ -269,7 +262,7 @@ export default function ProductDetail() {
             </View>
           </FadeInView>
 
-          {/* SIZES VARIANT PICKER - Using Custom Picker */}
+          {/* SIZES VARIANT SYSTEM SELECTION ROW */}
           <FadeInView delay={180}>
             {product.variants && product.variants.length > 0 && (
               <View style={styles.selectorContainer}>
@@ -283,7 +276,7 @@ export default function ProductDetail() {
             )}
           </FadeInView>
 
-          {/* DESCRIPTIONS VIEW SECTION */}
+          {/* DESCRIPTION SECTION CARD */}
           <FadeInView delay={250}>
             <View style={styles.infoCard}>
               <View style={styles.cardHeader}>
@@ -303,7 +296,7 @@ export default function ProductDetail() {
             </View>
           </FadeInView>
 
-          {/* EXCLUSIVE RECOMMENDATIONS VIEW COMPONENT */}
+          {/* RELATED MATRIX SHELF */}
           <FadeInView delay={300}>
             <View style={styles.relatedSection}>
               <Text style={styles.sectionHeader}>You May Also Like</Text>
@@ -320,7 +313,7 @@ export default function ProductDetail() {
         </View>
       </ScrollView>
 
-      {/* FIXED ACTION FOOTER PIN BAR */}
+      {/* FLOATING ACTION BOTTOM PIN FOOTER CONTROL BAR */}
       <View style={[styles.stickyFooter, { paddingBottom: Math.max(insets.bottom, 16) }]}>
         <View style={styles.qtyContainer}>
           <TouchableOpacity onPress={() => setQuantity(Math.max(1, quantity - 1))} style={styles.qtyBtn}>
@@ -360,11 +353,11 @@ const styles = StyleSheet.create({
   priceRow: { flexDirection: 'row', alignItems: 'flex-end', marginBottom: 16 },
   currentPrice: { fontSize: 26, fontWeight: '900', color: '#1B5E20', marginRight: 12 },
   originalPrice: { fontSize: 15, color: '#999', textDecorationLine: 'line-through', marginBottom: 2 },
-  selectorContainer: { marginBottom: 20 },
+  selectorContainer: { marginBottom: 20, position: 'relative', zIndex: 1000 },
   sectionHeader: { fontSize: 16, fontWeight: '800', color: '#1A1A1A', marginBottom: 10 },
   
-  // Custom Picker Styles
-  customPickerContainer: { position: 'relative', zIndex: 1000 },
+  // Custom Dynamic Selection Modal Override Bounds
+  customPickerContainer: { position: 'relative', width: '100%' },
   customPickerButton: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -376,78 +369,39 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
   },
-  customPickerText: {
-    fontSize: 15,
-    color: '#1A1A1A',
-    fontWeight: '500',
-  },
-  dropdownBackdrop: {
-    position: 'absolute',
-    top: -1000,
-    left: -1000,
-    right: -1000,
-    bottom: -1000,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    zIndex: 999,
-  },
+  customPickerText: { fontSize: 15, color: '#1A1A1A', fontWeight: '600' },
+  dropdownBackdrop: { position: 'absolute', top: -2000, left: -1000, right: -1000, bottom: -1000, zIndex: 998 },
   customPickerDropdown: {
     position: 'absolute',
-    top: 60,
+    top: 56,
     left: 0,
     right: 0,
     backgroundColor: '#FFF',
     borderRadius: 14,
     borderWidth: 1,
     borderColor: '#E8F5E9',
-    elevation: 5,
+    elevation: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    zIndex: 1000,
-    maxHeight: 300,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    zIndex: 999,
+    maxHeight: 220,
+    overflow: 'scroll'
   },
-  customPickerItem: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  customPickerItemSelected: {
-    backgroundColor: '#F8FDF5',
-  },
-  customPickerItemContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  customPickerItemLabel: {
-    fontSize: 15,
-    color: '#555',
-    fontWeight: '500',
-    marginBottom: 2,
-  },
-  customPickerItemPrice: {
-    fontSize: 13,
-    color: '#888',
-  },
-  customPickerItemTextSelected: {
-    color: '#1B5E20',
-    fontWeight: '700',
-  },
-  customPickerItemPriceSelected: {
-    color: '#1B5E20',
-    fontWeight: '600',
-  },
+  customPickerItem: { paddingHorizontal: 16, paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: '#F4F4F4' },
+  customPickerItemSelected: { backgroundColor: '#F1F8E9' },
+  customPickerItemContent: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  customPickerItemLabel: { fontSize: 14, color: '#333', fontWeight: '600', marginBottom: 2 },
+  customPickerItemPrice: { fontSize: 13, color: '#666', fontWeight: '500' },
+  customPickerItemTextSelected: { color: '#1B5E20', fontWeight: '800' },
+  customPickerItemPriceSelected: { color: '#1B5E20' },
   
-  // Info Card Styles
   infoCard: { backgroundColor: '#FFF', borderRadius: 20, padding: 16, marginBottom: 20, elevation: 1, borderWidth: 1, borderColor: 'rgba(0,0,0,0.01)' },
   cardHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
   cardTitle: { fontSize: 15, fontWeight: '800', color: '#1B5E20', marginLeft: 8 },
   description: { fontSize: 14, lineHeight: 22, color: '#555' },
-  
-  // Related Section Styles
-  relatedSection: { marginTop: 4 },
+  relatedSection: { marginTop: 4, zIndex: 1 },
   relatedList: { paddingVertical: 8 },
   relatedCard: { width: 140, marginRight: 14, backgroundColor: '#FFF', borderRadius: 16, padding: 12, elevation: 2, borderWidth: 1, borderColor: 'rgba(0,0,0,0.01)' },
   relatedImageWrapper: { width: '100%', height: 100, backgroundColor: '#F8F9FA', borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginBottom: 10 },
@@ -455,9 +409,7 @@ const styles = StyleSheet.create({
   relatedTitle: { fontSize: 13, fontWeight: '700', color: '#222', marginBottom: 4 },
   relatedPrice: { fontSize: 14, fontWeight: '800', color: '#1B5E20' },
   addMiniBtn: { position: 'absolute', bottom: 10, right: 10, backgroundColor: '#F1F8E9', width: 26, height: 26, borderRadius: 13, justifyContent: 'center', alignItems: 'center' },
-  
-  // Footer Styles
-  stickyFooter: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#FFF', flexDirection: 'row', paddingHorizontal: 20, paddingTop: 14, borderTopLeftRadius: 28, borderTopRightRadius: 28, elevation: 15 },
+  stickyFooter: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#FFF', flexDirection: 'row', paddingHorizontal: 20, paddingTop: 14, borderTopLeftRadius: 28, borderTopRightRadius: 28, elevation: 15, zIndex: 10 },
   qtyContainer: { flexDirection: 'row', backgroundColor: '#F8FDF5', borderRadius: 16, alignItems: 'center', height: 52, width: '35%', justifyContent: 'space-between', borderWidth: 1, borderColor: '#E8F5E9', marginRight: 14 },
   qtyBtn: { paddingHorizontal: 12, height: '100%', justifyContent: 'center' },
   qtyText: { fontSize: 16, fontWeight: '800', color: '#1A1A1A' },
