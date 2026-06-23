@@ -1,3 +1,4 @@
+// src/pages/Rewards/Rewards.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   View, Text, StyleSheet, ScrollView, TouchableOpacity, 
@@ -12,7 +13,6 @@ const API_URL = 'https://natureswad-backend.onrender.com/api';
 const POINTS_REQUIRED = 200;
 const DISCOUNT_VALUE = 200;
 
-// --- Animation Helper ---
 const FadeInView = ({ children, delay = 0, style }: { children: React.ReactNode; delay?: number; style?: any }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(24)).current;
@@ -21,7 +21,7 @@ const FadeInView = ({ children, delay = 0, style }: { children: React.ReactNode;
       Animated.timing(fadeAnim, { toValue: 1, duration: 500, delay, useNativeDriver: true }),
       Animated.spring(slideAnim, { toValue: 0, friction: 8, tension: 40, delay, useNativeDriver: true }),
     ]).start();
-  }, []);
+  }, [delay, fadeAnim, slideAnim]);
   return (
     <Animated.View style={[{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }, style]}>
       {children}
@@ -44,15 +44,19 @@ export default function Rewards() {
     }
   }, [identifier]);
 
+  // ✅ FIX: ENFORCES PARALLEL DOWNLOADING AND DERIVES POINT BALANCES SOLELY FROM ACTIVE VALID HISTORIES
   const fetchRewardsData = async (uid: string) => {
     setLoading(true);
     try {
+      // 1. Fetch live dynamically calculated points remaining from current valid db items
       const pointsRes = await fetch(`${API_URL}/user-points/${uid}`);
+      let currentLivePoints = 0;
       if (pointsRes.ok) {
         const pointsData = await pointsRes.json();
-        setPoints(pointsData.points || 0);
+        currentLivePoints = pointsData.points || 0;
       }
 
+      // 2. Fetch order history profiles
       const ordersRes = await fetch(`${API_URL}/orders/${uid}`);
       if (ordersRes.ok) {
         const ordersData = await ordersRes.json();
@@ -62,8 +66,11 @@ export default function Rewards() {
         );
         setHistory(pointsHistory);
       }
+
+      // Sync the state natively with calculated backend data
+      setPoints(currentLivePoints);
     } catch (error) {
-      console.error("Error fetching rewards:", error);
+      console.error("Error fetching rewards metrics wrapper profiles:", error);
     } finally {
       setLoading(false);
     }
@@ -91,19 +98,15 @@ export default function Rewards() {
             keyboardShouldPersistTaps="handled"
           >
             <FadeInView style={styles.guestInner}>
-
-              {/* Icon */}
               <View style={styles.guestIconCircle}>
                 <Ionicons name="star" size={44} color="#F57F17" />
               </View>
 
-              {/* Title */}
               <Text style={styles.guestTitle}>Check Your Rewards</Text>
               <Text style={styles.guestSubtitle}>
                 Enter the mobile number used during your previous checkouts to view your points and history.
               </Text>
 
-              {/* How it works strip */}
               <View style={styles.guestHowItWorksRow}>
                 <View style={styles.guestHowItem}>
                   <View style={[styles.guestHowIcon, { backgroundColor: '#E8F5E9' }]}>
@@ -127,7 +130,6 @@ export default function Rewards() {
                 </View>
               </View>
 
-              {/* Input */}
               <View style={styles.inputCard}>
                 <Text style={styles.inputLabel}>Mobile Number</Text>
                 <TextInput 
@@ -174,7 +176,7 @@ export default function Rewards() {
               <View style={{ flex: 1 }}>
                 <Text style={styles.heroTitle}>Natureswad Rewards</Text>
                 <Text style={styles.heroSub}>
-                  {auth().currentUser ? "Your total available balance" : `Guest: +91 ${identifier}`}
+                  {auth().currentUser ? "Your total available balance" : `Guest Account ID: [Omitted]`}
                 </Text>
                 {!auth().currentUser && (
                   <TouchableOpacity onPress={() => setIdentifier(null)} style={styles.changeAccountBtn}>
@@ -221,7 +223,7 @@ export default function Rewards() {
                 <Ionicons name="cart-outline" size={24} color="#1B5E20" />
               </View>
               <Text style={styles.infoTitle}>Shop</Text>
-              <Text style={styles.infoSub}>Buy organic foods online or in-store.</Text>
+              <Text style={styles.infoSub}>Buy functional items online or via app.</Text>
             </View>
             <View style={styles.infoBox}>
               <View style={[styles.infoIconCircle, { backgroundColor: '#FFF8E1' }]}>
@@ -313,139 +315,34 @@ const styles = StyleSheet.create({
   blob1: { width: 320, height: 320, backgroundColor: '#FFF9C4', top: -60, right: -110 },
   blob2: { width: 420, height: 420, backgroundColor: '#E8F5E9', bottom: 80, left: -160 },
 
-  // ── Guest Screen ──────────────────────────────────────────
-  guestContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 40,
-  },
-  guestInner: {
-    alignItems: 'center',
-    width: '100%',
-  },
-  guestIconCircle: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    backgroundColor: '#FFF8E1',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 24,
-    shadowColor: '#F57F17',
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 6,
-  },
-  guestTitle: {
-    fontSize: 26,
-    fontWeight: '900',
-    color: '#1A1A1A',
-    marginBottom: 10,
-    textAlign: 'center',
-    letterSpacing: 0.3,
-  },
-  guestSubtitle: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: 28,
-    paddingHorizontal: 8,
-  },
-  // Mini how-it-works row on guest screen
-  guestHowItWorksRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    paddingVertical: 16,
-    paddingHorizontal: 12,
-    width: '100%',
-    marginBottom: 28,
-    shadowColor: '#000',
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    elevation: 2,
-  },
+  guestContainer: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 40 },
+  guestInner: { alignItems: 'center', width: '100%' },
+  guestIconCircle: { width: 88, height: 88, borderRadius: 44, backgroundColor: '#FFF8E1', justifyContent: 'center', alignItems: 'center', marginBottom: 24, shadowColor: '#F57F17', shadowOpacity: 0.25, shadowRadius: 16, shadowOffset: { width: 0, height: 6 }, elevation: 6 },
+  guestTitle: { fontSize: 26, fontWeight: '900', color: '#1A1A1A', marginBottom: 10, textAlign: 'center', letterSpacing: 0.3 },
+  guestSubtitle: { fontSize: 14, color: '#666', textAlign: 'center', lineHeight: 22, marginBottom: 28, paddingHorizontal: 8 },
+  guestHowItWorksRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 16, paddingVertical: 16, paddingHorizontal: 12, width: '100%', marginBottom: 28, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 },
   guestHowItem: { flex: 1, alignItems: 'center', gap: 8 },
   guestHowIcon: { width: 38, height: 38, borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
   guestHowLabel: { fontSize: 11, fontWeight: '700', color: '#444', textAlign: 'center' },
   guestHowDivider: { width: 1, height: 32, backgroundColor: '#EEF2EE' },
-  // Input card
-  inputCard: {
-    width: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 14,
-    shadowColor: '#000',
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  inputLabel: {
-    fontSize: 11,
-    fontWeight: '800',
-    color: '#999',
-    letterSpacing: 0.8,
-    textTransform: 'uppercase',
-    marginBottom: 8,
-  },
-  input: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1A1A1A',
-    letterSpacing: 2,
-    paddingVertical: 4,
-  },
-  guestButton: {
-    flexDirection: 'row',
-    backgroundColor: '#1B5E20',
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 18,
-    borderRadius: 16,
-    shadowColor: '#1B5E20',
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 5,
-  },
+  inputCard: { width: '100%', backgroundColor: '#fff', borderRadius: 16, padding: 16, marginBottom: 14, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 },
+  inputLabel: { fontSize: 11, fontWeight: '800', color: '#999', letterSpacing: 0.8, textTransform: 'uppercase', marginBottom: 8 },
+  input: { fontSize: 20, fontWeight: '700', color: '#1A1A1A', letterSpacing: 2, paddingVertical: 4 },
+  guestButton: { flexDirection: 'row', backgroundColor: '#1B5E20', width: '100%', alignItems: 'center', justifyContent: 'center', paddingVertical: 18, borderRadius: 16, shadowColor: '#1B5E20', shadowOpacity: 0.3, shadowRadius: 10, elevation: 5 },
   guestButtonText: { color: '#fff', fontSize: 16, fontWeight: '900' },
-  guestFootnote: {
-    fontSize: 12,
-    color: '#AAB0AA',
-    marginTop: 16,
-    textAlign: 'center',
-  },
+  guestFootnote: { fontSize: 12, color: '#AAB0AA', marginTop: 16, textAlign: 'center' },
 
-  // ── Dashboard ─────────────────────────────────────────────
   scrollContent: { padding: 20, paddingBottom: 60, zIndex: 1 },
-
-  heroCard: {
-    backgroundColor: '#1B5E20',
-    borderRadius: 28,
-    padding: 24,
-    marginBottom: 20,
-    shadowColor: '#1B5E20',
-    shadowOpacity: 0.35,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 10,
-  },
+  heroCard: { backgroundColor: '#1B5E20', borderRadius: 28, padding: 24, marginBottom: 20, shadowColor: '#1B5E20', shadowOpacity: 0.35, shadowRadius: 18, shadowOffset: { width: 0, height: 6 }, elevation: 10 },
   heroTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   heroTitle: { fontSize: 20, fontWeight: '900', color: '#FFF', marginBottom: 4 },
   heroSub: { fontSize: 13, color: '#A5D6A7', marginBottom: 2 },
   changeAccountBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 6 },
   changeAccountText: { fontSize: 12, color: 'rgba(255,255,255,0.75)', textDecorationLine: 'underline' },
   heroIconCircle: { width: 50, height: 50, backgroundColor: '#FFF8E1', borderRadius: 25, justifyContent: 'center', alignItems: 'center' },
-  
   pointsDisplay: { flexDirection: 'row', alignItems: 'baseline', marginTop: 20, marginBottom: 4 },
   bigNumber: { fontSize: 60, fontWeight: '900', color: '#FFF', marginRight: 10, lineHeight: 68 },
   pointsLabel: { fontSize: 18, fontWeight: '600', color: 'rgba(255,255,255,0.85)' },
-
   progressContainer: { marginTop: 20, backgroundColor: 'rgba(255,255,255,0.1)', padding: 16, borderRadius: 16 },
   progressHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 },
   progressHeaderText: { color: 'rgba(255,255,255,0.9)', fontSize: 12, fontWeight: '700' },
@@ -454,79 +351,26 @@ const styles = StyleSheet.create({
   pointsNeededText: { color: '#FFF8E1', fontSize: 12, textAlign: 'center', marginTop: 10, opacity: 0.85, lineHeight: 18 },
   rewardReadyText: { color: '#69F0AE', fontSize: 13, textAlign: 'center', marginTop: 10, fontWeight: '800' },
 
-  // Section title shared
   dashSectionTitle: { fontSize: 18, fontWeight: '900', color: '#1A1A1A', marginBottom: 14, marginLeft: 2 },
-
-  // How it works grid
   infoGrid: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 28, gap: 10 },
-  infoBox: {
-    flex: 1,
-    backgroundColor: '#FFF',
-    padding: 16,
-    borderRadius: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.04,
-    shadowRadius: 8,
-    elevation: 2,
-  },
+  infoBox: { flex: 1, backgroundColor: '#FFF', padding: 16, borderRadius: 20, alignItems: 'center', shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 },
   infoIconCircle: { width: 46, height: 46, borderRadius: 14, justifyContent: 'center', alignItems: 'center', marginBottom: 10 },
   infoTitle: { fontSize: 14, fontWeight: '800', color: '#222', marginBottom: 4, textAlign: 'center' },
   infoSub: { fontSize: 11, color: '#777', textAlign: 'center', lineHeight: 16 },
 
-  // History list
-  historyListCard: {
-    backgroundColor: '#FFF',
-    borderRadius: 24,
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.04,
-    shadowRadius: 12,
-    elevation: 3,
-  },
+  historyListCard: { backgroundColor: '#FFF', borderRadius: 24, paddingHorizontal: 20, paddingVertical: 8, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 12, elevation: 3 },
   emptyHistory: { alignItems: 'center', paddingVertical: 44 },
   emptyIconCircle: { width: 68, height: 68, borderRadius: 34, backgroundColor: '#F5F7F5', justifyContent: 'center', alignItems: 'center', marginBottom: 14 },
   emptyHistoryTitle: { fontSize: 16, fontWeight: '800', color: '#444', marginBottom: 6 },
   emptyHistoryText: { color: '#999', fontSize: 13, textAlign: 'center', lineHeight: 20, paddingHorizontal: 20 },
-  
-  historyRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F3F0',
-  },
+  historyRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: '#F0F3F0' },
   historyLeft: { flexDirection: 'row', alignItems: 'center', flex: 1 },
-  historyIconBg: {
-    width: 42,
-    height: 42,
-    borderRadius: 13,
-    backgroundColor: '#F4F7F5',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
+  historyIconBg: { width: 42, height: 42, borderRadius: 13, backgroundColor: '#F4F7F5', justifyContent: 'center', alignItems: 'center', marginRight: 12 },
   historyOrderId: { fontSize: 14, fontWeight: '800', color: '#1A1A1A', marginBottom: 3 },
   historyDate: { fontSize: 12, color: '#999' },
-  
   historyRight: { alignItems: 'flex-end', gap: 6 },
-  earnedBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#E8F5E9',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
-    gap: 2,
-  },
+  earnedBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#E8F5E9', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, gap: 2 },
   earnedBadgeText: { color: '#2E7D32', fontSize: 11, fontWeight: '800' },
-  redeemedBadge: {
-    backgroundColor: '#FBE9E7',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
-  },
-  redeemedBadgeText: { color: '#D84315', fontSize: 11, fontWeight: '800' },
+  redeemedBadge: { backgroundColor: '#FBE9E7', paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8 },
+  redeemedBadgeText: { color: '#D84315', fontSize: 11, fontWeight: '800' }
 });

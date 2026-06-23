@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+// app/screens/CheckoutScreen.tsx
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, 
   ActivityIndicator, TextInput, Platform, Animated
@@ -23,7 +24,7 @@ const FadeInView = ({ children, delay = 0 }: { children: React.ReactNode; delay?
       Animated.timing(fadeAnim, { toValue: 1, duration: 600, delay, useNativeDriver: true }),
       Animated.spring(slideAnim, { toValue: 0, friction: 8, tension: 40, delay, useNativeDriver: true }),
     ]).start();
-  }, []);
+  }, [delay, fadeAnim, slideAnim]);
   return <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>{children}</Animated.View>;
 };
 
@@ -49,7 +50,6 @@ export default function CheckoutScreen() {
   const [stateName, setStateName] = useState('');
   const [pincode, setPincode] = useState('');
 
-  // Clean phone number to ensure it's just digits
   const cleanPhone = phone.replace(/\D/g, '');
 
   const isAddressValid = 
@@ -84,7 +84,6 @@ export default function CheckoutScreen() {
   // --- AUTO-FILL STATE & CITY FROM PINCODE ---
   useEffect(() => {
     const fetchLocationData = async () => {
-      // Only trigger if pincode is exactly 6 digits
       if (pincode.length === 6) {
         try {
           const response = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
@@ -92,13 +91,7 @@ export default function CheckoutScreen() {
           
           if (data && data[0] && data[0].Status === "Success") {
             const postOffice = data[0].PostOffice[0];
-            
-            // Set State automatically
-            if (postOffice.State) {
-              setStateName(postOffice.State);
-            }
-            
-            // Set City/District automatically if the user hasn't typed anything yet
+            if (postOffice.State) setStateName(postOffice.State);
             if (!city && (postOffice.District || postOffice.Block)) {
               setCity(postOffice.District || postOffice.Block);
             }
@@ -108,9 +101,8 @@ export default function CheckoutScreen() {
         }
       }
     };
-
     fetchLocationData();
-  }, [pincode]);
+  }, [pincode, city]);
 
   // --- FETCH USER POINTS ---
   useEffect(() => {
@@ -125,23 +117,31 @@ export default function CheckoutScreen() {
         const response = await fetch(`${API_URL}/user-points/${uid}`);
         if (response.ok) {
           const data = await response.json();
-          setUserPoints(data.points || 0);
+          const pointsFetched = data.points || 0;
+          setUserPoints(pointsFetched);
+          
+          // ✅ Safety parameter reset if they fall below the required threshold mid-session
+          if (pointsFetched < POINTS_REQUIRED_TO_REDEEM) {
+            setUsePoints(false);
+          }
         }
       } catch (error) {
         console.log("Could not fetch points", error);
+        setUsePoints(false);
       }
     };
     fetchUserPoints();
-  }, [auth().currentUser, cleanPhone]);
+  }, [cleanPhone]);
 
   // --- CALCULATIONS ---
   const subtotal = Number(cartTotal) || 0;
   const shipping = subtotal >= 500 ? 0 : 40;
   const tax = subtotal * 0.05;
-  const pointsDiscount = usePoints ? DISCOUNT_VALUE : 0;
+  
+  // Enforce validation criteria lookup before confirming active deduction values
+  const pointsDiscount = (usePoints && userPoints >= POINTS_REQUIRED_TO_REDEEM) ? DISCOUNT_VALUE : 0;
   const total = Math.max(0, subtotal + shipping + tax - pointsDiscount);
 
-  // --- SAVE ADDRESS HELPER ---
   const saveAddressLocally = async () => {
     try {
       const addressData = { name, phone: cleanPhone, address, city, stateName, pincode };
@@ -165,7 +165,7 @@ export default function CheckoutScreen() {
     total: total,
     subtotal: subtotal,
     discountApplied: pointsDiscount,
-    pointsRedeemed: usePoints ? POINTS_REQUIRED_TO_REDEEM : 0,
+    pointsRedeemed: pointsDiscount > 0 ? POINTS_REQUIRED_TO_REDEEM : 0,
     pointsEarned: POINTS_EARNED_PER_ORDER,
     items: cartItems,
     address: { name, phone: cleanPhone, address, city, stateName, pincode },
@@ -209,7 +209,7 @@ export default function CheckoutScreen() {
       const verifyData = await verifyRes.json();
       if (!verifyRes.ok) throw new Error(verifyData.error);
 
-      await saveAddressLocally(); // <-- Save address on success
+      await saveAddressLocally(); 
       clearCart();
       Alert.alert('Order Placed 🎉', `Payment successful! You earned ${POINTS_EARNED_PER_ORDER} points.`, [{ text: 'View Orders', onPress: () => router.replace('/components/MyOrders') }]);
 
@@ -232,7 +232,7 @@ export default function CheckoutScreen() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error);
 
-      await saveAddressLocally(); // <-- Save address on success
+      await saveAddressLocally(); 
       clearCart();
       Alert.alert('Order Placed 🎉', `COD order confirmed! You earned ${POINTS_EARNED_PER_ORDER} points.`, [{ text: 'View Orders', onPress: () => router.replace('/components/MyOrders') }]);
     } catch (error: any) {
@@ -259,7 +259,6 @@ export default function CheckoutScreen() {
             <View style={styles.inputGroup}><Text style={styles.label}>Phone Number</Text><TextInput style={styles.input} placeholder="10-digit mobile number" value={phone} onChangeText={setPhone} keyboardType="number-pad" maxLength={10} placeholderTextColor="#999" editable={!isProcessing} /></View>
             <View style={styles.inputGroup}><Text style={styles.label}>Complete Address</Text><TextInput style={[styles.input, styles.textArea]} placeholder="House No, Building, Street, Area" value={address} onChangeText={setAddress} multiline numberOfLines={3} textAlignVertical="top" placeholderTextColor="#999" editable={!isProcessing} /></View>
             
-            {/* Swapped Pincode and City here for better UX flow */}
             <View style={styles.rowInputs}>
               <View style={[styles.inputGroup, { flex: 1, marginRight: 10 }]}><Text style={styles.label}>Pincode</Text><TextInput style={styles.input} placeholder="123456" value={pincode} onChangeText={setPincode} keyboardType="number-pad" maxLength={6} placeholderTextColor="#999" editable={!isProcessing} /></View>
               <View style={[styles.inputGroup, { flex: 1 }]}><Text style={styles.label}>City</Text><TextInput style={styles.input} placeholder="City" value={city} onChangeText={setCity} placeholderTextColor="#999" editable={!isProcessing} /></View>
@@ -279,18 +278,31 @@ export default function CheckoutScreen() {
               </View>
               <Text style={styles.pointsText}>Current Balance: <Text style={{fontWeight: '800'}}>{userPoints}</Text> Points</Text>
               
+              {/* ✅ MANUALLY CHOOSE WHETHER TO REDEEM OR SAVE THE POINT UNLOCKED OFFERS */}
               {userPoints >= POINTS_REQUIRED_TO_REDEEM ? (
-                <TouchableOpacity 
-                  style={[styles.redeemBtn, usePoints && styles.redeemBtnActive]} 
-                  onPress={() => !isProcessing && setUsePoints(!usePoints)}
-                  activeOpacity={0.8}
-                  disabled={isProcessing}
-                >
-                  <Text style={[styles.redeemBtnText, usePoints && styles.redeemBtnTextActive]}>
-                    {usePoints ? `Redeeming ${POINTS_REQUIRED_TO_REDEEM} Points (-₹${DISCOUNT_VALUE})` : `Redeem ${POINTS_REQUIRED_TO_REDEEM} Points`}
-                  </Text>
-                  <Ionicons name={usePoints ? "checkmark-circle" : "gift-outline"} size={20} color={usePoints ? "#1B5E20" : "#F57F17"} />
-                </TouchableOpacity>
+                <View style={styles.redeemChoicesContainer}>
+                  <Text style={styles.redeemIntroText}>🎉 Reward unlocked! Would you like to use it on this purchase?</Text>
+                  
+                  <View style={styles.optionsFlexRow}>
+                    <TouchableOpacity 
+                      style={[styles.choicePill, usePoints && styles.choicePillActive]} 
+                      onPress={() => !isProcessing && setUsePoints(true)}
+                      activeOpacity={0.8}
+                    >
+                      <Ionicons name={usePoints ? "checkmark-circle" : "ellipse-outline"} size={18} color={usePoints ? "#1B5E20" : "#666"} />
+                      <Text style={[styles.choiceText, usePoints && styles.choiceTextActive]}>Redeem (-₹{DISCOUNT_VALUE})</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity 
+                      style={[styles.choicePill, !usePoints && styles.choicePillKeepActive]} 
+                      onPress={() => !isProcessing && setUsePoints(false)}
+                      activeOpacity={0.8}
+                    >
+                      <Ionicons name={!usePoints ? "bookmark" : "ellipse-outline"} size={16} color={!usePoints ? "#F57F17" : "#666"} />
+                      <Text style={[styles.choiceText, !usePoints && styles.choiceTextKeepActive]}>Keep points for later</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
               ) : (
                 <View style={styles.pointsProgressBarBg}>
                   <View style={[styles.pointsProgressBarFill, { width: `${(userPoints / POINTS_REQUIRED_TO_REDEEM) * 100}%` }]} />
@@ -326,7 +338,7 @@ export default function CheckoutScreen() {
             <View style={styles.summaryRow}><Text style={styles.summaryLabel}>Delivery Fee</Text><Text style={shipping === 0 ? styles.freeText : styles.summaryValue}>{shipping === 0 ? 'FREE' : `₹${shipping}`}</Text></View>
             <View style={styles.summaryRow}><Text style={styles.summaryLabel}>Taxes (5%)</Text><Text style={styles.summaryValue}>₹{tax.toFixed(2)}</Text></View>
             
-            {usePoints && (
+            {pointsDiscount > 0 && (
               <View style={styles.summaryRow}>
                 <Text style={[styles.summaryLabel, { color: '#F25D23', fontWeight: '700' }]}>Points Discount</Text>
                 <Text style={[styles.summaryValue, { color: '#F25D23' }]}>-₹{pointsDiscount.toFixed(2)}</Text>
@@ -360,8 +372,17 @@ const styles = StyleSheet.create({
   sectionHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
   sectionTitle: { fontSize: 18, fontWeight: '800', color: '#1A1A1A', marginLeft: 8 },
   
-  // Rewards Styles
-  pointsText: { fontSize: 15, color: '#333', marginBottom: 16 },
+  // Custom Choice Rewards Matrix
+  pointsText: { fontSize: 15, color: '#333', marginBottom: 12 },
+  redeemChoicesContainer: { marginTop: 8 },
+  redeemIntroText: { fontSize: 14, color: '#555', fontWeight: '600', marginBottom: 12 },
+  optionsFlexRow: { flexDirection: 'row', gap: 10 },
+  choicePill: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: '#F8F9FA', borderWidth: 1, borderColor: '#E8E8E8', borderRadius: 14, padding: 12 },
+  choicePillActive: { backgroundColor: '#E8F5E9', borderColor: '#A5D6A7' },
+  choicePillKeepActive: { backgroundColor: '#FFF8E1', borderColor: '#FFE082' },
+  choiceText: { fontSize: 13, fontWeight: '700', color: '#666', flex: 1 },
+  choiceTextActive: { color: '#1B5E20' },
+  choiceTextKeepActive: { color: '#F57F17' },
   redeemBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#FFF8E1', padding: 14, borderRadius: 16, borderWidth: 1, borderColor: '#FFE082' },
   redeemBtnActive: { backgroundColor: '#E8F5E9', borderColor: '#A5D6A7' },
   redeemBtnText: { fontSize: 15, fontWeight: '700', color: '#F57F17' },
@@ -370,6 +391,14 @@ const styles = StyleSheet.create({
   pointsProgressBarFill: { backgroundColor: '#F25D23', height: '100%', position: 'absolute', left: 0, top: 0 },
   pointsSubText: { fontSize: 12, color: '#888', marginTop: 12, fontWeight: '500', textAlign: 'center' },
   earnPointsHint: { fontSize: 12, color: '#2E7D32', fontWeight: '700', textAlign: 'center', marginTop: 16, backgroundColor: '#E8F5E9', paddingVertical: 6, borderRadius: 8 },
+
+  // Split-Selection Buttons Options
+  selectorContainer: { marginBottom: 24 },
+  optionsWrapper: { flexDirection: 'row', gap: 12, marginTop: 4 },
+  optionChoice: { flex: 1, borderWidth: 1, borderColor: '#E8E8E8', borderRadius: 16, padding: 14, backgroundColor: '#F8F9FA', alignItems: 'center', justifyContent: 'center' },
+  optionChoiceActive: { backgroundColor: '#E8F5E9', borderColor: '#A5D6A7' },
+  optionChoiceText: { fontSize: 14, fontWeight: '700', color: '#555' },
+  optionChoiceTextActive: { color: '#1B5E20' },
 
   inputGroup: { marginBottom: 16 },
   rowInputs: { flexDirection: 'row', justifyContent: 'space-between' },
@@ -384,16 +413,16 @@ const styles = StyleSheet.create({
   payOptionTextSelected: { color: '#1B5E20' },
   payOptionSub: { fontSize: 12, color: '#888', marginTop: 2, fontWeight: '500' },
   summaryCard: { backgroundColor: '#fff', borderRadius: 24, padding: 24, marginBottom: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.04, shadowRadius: 10, elevation: 3, borderWidth: 1, borderColor: 'rgba(0,0,0,0.02)' },
-  summaryTitle: { fontSize: 18, fontWeight: '800', color: '#1A1A1A', marginBottom: 16 },
-  summaryRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 14 },
+  summaryTitle: { fontSize: 16, fontWeight: '800', color: '#1A1A1A', marginBottom: 16 },
+  summaryRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 12 },
   summaryLabel: { fontSize: 14, color: '#666', fontWeight: '500' },
-  summaryValue: { fontSize: 14, fontWeight: '600', color: '#333' },
-  freeText: { fontSize: 14, fontWeight: '700', color: '#2E7D32' },
-  divider: { height: 1, backgroundColor: '#F0F4F8', marginVertical: 16, borderStyle: 'dashed' },
+  summaryValue: { fontSize: 14, color: '#1A1A1A', fontWeight: '700' },
+  freeText: { fontSize: 14, fontWeight: '800', color: '#2E7D32' },
+  divider: { height: 1, backgroundColor: '#F0F0F0', marginVertical: 14 },
   totalLabel: { fontSize: 16, fontWeight: '800', color: '#1A1A1A' },
-  totalValue: { fontSize: 22, fontWeight: '900', color: '#1B5E20' },
-  footer: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#fff', borderTopLeftRadius: 32, borderTopRightRadius: 32, paddingTop: 20, paddingHorizontal: 20, shadowColor: '#000', shadowOffset: { width: 0, height: -10 }, shadowOpacity: 0.05, shadowRadius: 15, elevation: 15, zIndex: 1000 },
-  payButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#1B5E20', paddingVertical: 18, borderRadius: 20, shadowColor: '#1B5E20', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 5 },
-  payButtonDisabled: { backgroundColor: '#A5D6A7', shadowOpacity: 0, elevation: 0 },
-  payText: { color: '#fff', fontSize: 16, fontWeight: '800', letterSpacing: 0.5 },
+  totalValue: { fontSize: 20, fontWeight: '900', color: '#1B5E20' },
+  footer: { position: 'absolute', bottom: 0, left: 0, right: 0, backgroundColor: '#fff', padding: 16, borderTopWidth: 1, borderTopColor: 'rgba(0,0,0,0.05)', zIndex: 10 },
+  payButton: { flexDirection: 'row', backgroundColor: '#1B5E20', height: 56, borderRadius: 16, justifyContent: 'center', alignItems: 'center', shadowColor: '#1B5E20', shadowOpacity: 0.3, shadowRadius: 10, elevation: 4 },
+  payButtonDisabled: { backgroundColor: '#999' },
+  payText: { color: '#fff', fontSize: 16, fontWeight: '800' }
 });
