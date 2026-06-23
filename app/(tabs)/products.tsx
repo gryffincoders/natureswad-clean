@@ -44,7 +44,7 @@ const getGroupedProducts = () => {
   const sections = Object.keys(groups).map((cat, index) => ({
     id: String(index),
     category: cat,
-    description: CATEGORY_DESCRIPTIONS[cat] || 'Buy organic food products and natural groceries online India.',
+    description: CATEGORY_DESCRIPTIONS[cat] || 'Buy organic food products and natural groceries online.',
     items: groups[cat],
   }));
 
