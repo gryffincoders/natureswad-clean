@@ -68,20 +68,17 @@ const Index = () => {
       {/* MODERN BACKGROUND ABSTRACT ELEMENTS */}
       <View style={[styles.bgBlob, styles.blobTop]} />
       <View style={[styles.bgBlob, styles.blobBottom]} />
+<View style={styles.centerContent}>
+  <Animated.View style={animatedLogoStyle}>
+    <Animated.Image
+      source={require('../assets/icon.png')}
+      style={styles.logo}
+      resizeMode="contain"
+    />
+  </Animated.View>
 
-      <View style={styles.centerContent}>
-        {/* LOGO HERO CONTAINER */}
-        <Animated.View style={[styles.logoWrapper, animatedLogoStyle]}>
-          <Animated.Image
-            source={require('../assets/icon.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-        </Animated.View>
-       
-        {/* MINIMALIST PREMIUM SPINNER */}
-        <ActivityIndicator size="small" color="#2E7D32" style={styles.spinner} />
-      </View>
+  <ActivityIndicator size="small" color="#2E7D32" style={styles.spinner} />
+</View>
 
       {/* FOOTER BRANDING FOR AN AUTHENTIC NUTRITION PLATFORM APP LOOK */}
       <Animated.View style={[styles.footerContainer, { opacity: opacity }]}>
@@ -113,20 +110,19 @@ const styles = StyleSheet.create({
     zIndex: 5,
   },
   logoWrapper: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 50,
-    padding: 20,
-    // Soft drop shadow to elevate the branding container
-    shadowColor: '#1B5E20',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.08,
-    shadowRadius: 20,
-    elevation: 8,
-  },
+  backgroundColor: '#FFFFFF',
+  borderRadius: 50,
+  padding: 20,
+  shadowColor: '#1B5E20',
+  shadowOffset: { width: 0, height: 12 },
+  shadowOpacity: 0.08,
+  shadowRadius: 20,
+  elevation: 8,
+},
   logo: {
-    width: width * 0.45,
-    height: width * 0.45,
-  },
+  width: width * 0.55,
+  height: width * 0.55,
+},
   spinner: {
     marginTop: 40,
     transform: [{ scale: 1.2 }],
