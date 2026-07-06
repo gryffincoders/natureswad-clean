@@ -1,7 +1,8 @@
 // app/product/[id].tsx
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { 
-  View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Dimensions, Animated, FlatList, Platform, Share 
+  View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, 
+  Dimensions, Animated, FlatList, Platform, Share, Modal 
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -26,7 +27,7 @@ const FadeInView = ({ children, delay = 0 }: { children: React.ReactNode, delay?
   return <Animated.View style={{ opacity: fade, transform: [{ translateY: slide }] }}>{children}</Animated.View>;
 };
 
-// Custom Variant Picker Component - Works on both iOS and Android
+// Custom Variant Picker Component using Modal with bottom-sheet style
 const CustomVariantPicker = ({ variants, selectedIndex, onValueChange }: any) => {
   const [showPicker, setShowPicker] = useState(false);
   
@@ -35,65 +36,87 @@ const CustomVariantPicker = ({ variants, selectedIndex, onValueChange }: any) =>
   const selectedVariant = variants[selectedIndex];
   
   return (
-    <View style={styles.customPickerContainer}>
+    <>
       <TouchableOpacity 
         style={styles.customPickerButton}
-        onPress={() => setShowPicker(!showPicker)}
+        onPress={() => setShowPicker(true)}
         activeOpacity={0.7}
       >
         <Text style={styles.customPickerText}>
           {selectedVariant?.label} - {selectedVariant?.price}
         </Text>
-        <Ionicons name={showPicker ? "chevron-up" : "chevron-down"} size={20} color="#1B5E20" />
+        <Ionicons name="chevron-down" size={20} color="#1B5E20" />
       </TouchableOpacity>
       
-      {showPicker && (
-        <>
-          {/* Backdrop to close dropdown when tapping outside */}
-          <TouchableOpacity 
-            style={styles.dropdownBackdrop} 
-            activeOpacity={1} 
-            onPress={() => setShowPicker(false)} 
+      <Modal
+        visible={showPicker}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowPicker(false)}
+      >
+        <View style={styles.modalOverlay}>
+          {/* Backdrop - catches taps outside the modal content */}
+          <TouchableOpacity
+            style={StyleSheet.absoluteFillObject}
+            activeOpacity={1}
+            onPress={() => setShowPicker(false)}
           />
           
-          <View style={styles.customPickerDropdown}>
-            {variants.map((variant: any, idx: number) => (
-              <TouchableOpacity
-                key={idx}
-                style={[
-                  styles.customPickerItem,
-                  selectedIndex === idx && styles.customPickerItemSelected
-                ]}
-                onPress={() => {
-                  onValueChange(idx);
-                  setShowPicker(false);
-                }}
-              >
-                <View style={styles.customPickerItemContent}>
-                  <View>
-                    <Text style={[
-                      styles.customPickerItemLabel,
-                      selectedIndex === idx && styles.customPickerItemTextSelected
-                    ]}>
-                      {variant.label}
-                    </Text>
-                    <Text style={[
-                      styles.customPickerItemPrice,
-                      selectedIndex === idx && styles.customPickerItemPriceSelected
-                    ]}>
-                      {variant.price}
-                    </Text>
-                  </View>
-                  {selectedIndex === idx && (
-                    <Ionicons name="checkmark-circle" size={24} color="#1B5E20" />
-                  )}
-                </View>
+          {/* Modal Content - prevents taps from bubbling up */}
+          <View style={styles.modalContent}>
+            <View style={styles.modalHandle} />
+            
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select Pack Size</Text>
+              <TouchableOpacity onPress={() => setShowPicker(false)}>
+                <Ionicons name="close" size={24} color="#333" />
               </TouchableOpacity>
-            ))}
+            </View>
+            
+            <ScrollView 
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.modalScrollContent}
+              keyboardShouldPersistTaps="handled"
+            >
+              {variants.map((variant: any, idx: number) => (
+                <TouchableOpacity
+                  key={idx}
+                  style={[
+                    styles.modalItem,
+                    selectedIndex === idx && styles.modalItemSelected
+                  ]}
+                  onPress={() => {
+                    onValueChange(idx);
+                    setShowPicker(false);
+                  }}
+                  activeOpacity={0.7}
+                >
+                  <View style={styles.customPickerItemContent}>
+                    <View>
+                      <Text style={[
+                        styles.customPickerItemLabel,
+                        selectedIndex === idx && styles.customPickerItemTextSelected
+                      ]}>
+                        {variant.label}
+                      </Text>
+                      <Text style={[
+                        styles.customPickerItemPrice,
+                        selectedIndex === idx && styles.customPickerItemPriceSelected
+                      ]}>
+                        {variant.price}
+                      </Text>
+                    </View>
+                    {selectedIndex === idx && (
+                      <Ionicons name="checkmark-circle" size={24} color="#1B5E20" />
+                    )}
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
           </View>
-        </>
-      )}
-    </View>
+        </View>
+      </Modal>
+    </>
   );
 };
 
@@ -217,7 +240,11 @@ export default function ProductDetail() {
 
       <HeaderTemp showBack={true} /> 
       
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
+      <ScrollView 
+        showsVerticalScrollIndicator={false} 
+        contentContainerStyle={{ paddingBottom: 120 }}
+        keyboardShouldPersistTaps="handled"
+      >
         
         {/* GALLERY IMAGE CAROUSEL */}
         <FadeInView>
@@ -269,7 +296,7 @@ export default function ProductDetail() {
             </View>
           </FadeInView>
 
-          {/* SIZES VARIANT PICKER - Using Custom Picker */}
+          {/* SIZES VARIANT PICKER - Using Modal-based Picker */}
           <FadeInView delay={180}>
             {product.variants && product.variants.length > 0 && (
               <View style={styles.selectorContainer}>
@@ -381,40 +408,59 @@ const styles = StyleSheet.create({
     color: '#1A1A1A',
     fontWeight: '500',
   },
-  dropdownBackdrop: {
-    position: 'absolute',
-    top: -1000,
-    left: -1000,
-    right: -1000,
-    bottom: -1000,
-    backgroundColor: 'rgba(0,0,0,0.3)',
-    zIndex: 999,
+  
+  // Modal Styles - Bottom Sheet
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'flex-end',
   },
-  customPickerDropdown: {
-    position: 'absolute',
-    top: 60,
-    left: 0,
-    right: 0,
+  modalContent: {
     backgroundColor: '#FFF',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#E8F5E9',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 20,
+    maxHeight: '60%',
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.25,
     shadowRadius: 8,
-    zIndex: 1000,
-    maxHeight: 300,
   },
-  customPickerItem: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+  modalHandle: {
+    width: 40,
+    height: 4,
+    backgroundColor: '#DDD',
+    borderRadius: 2,
+    alignSelf: 'center',
+    marginBottom: 16,
+  },
+  modalScrollContent: {
+    paddingBottom: 20,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
   },
-  customPickerItemSelected: {
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1A1A1A',
+  },
+  modalItem: {
+    paddingVertical: 14,
+    paddingHorizontal: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F5F5F5',
+  },
+  modalItemSelected: {
     backgroundColor: '#F8FDF5',
+    borderRadius: 8,
   },
   customPickerItemContent: {
     flexDirection: 'row',
