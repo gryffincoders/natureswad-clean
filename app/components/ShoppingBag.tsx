@@ -283,23 +283,24 @@ export default function ShoppingBag() {
                   <Text style={styles.sectionTitle}>You may also like</Text>
                 </View>
                 {/* ✅ Added contentContainerStyle instead of style for correct scroll padding */}
-                <ScrollView 
-                  horizontal 
-                  showsHorizontalScrollIndicator={false} 
-                  contentContainerStyle={styles.suggestionsScroll}
-                >
-                  {/* ✅ Used IDs that actually exist in your products list */}
-                  {['a1', 'a2', 'h1', 'h3', 'po4'].map((id) => {
-                    const content = renderSuggestion(id);
-                    // ✅ If product isn't found, do NOT render the wrapper (Fixes the gap bug)
-                    if (!content) return null; 
-                    return (
-                      <View key={id} style={styles.suggestionWrapper}>
-                        {content}
-                      </View>
-                    );
-                  })}
-                </ScrollView>
+                <ScrollView
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  contentContainerStyle={styles.suggestionsScroll}
+>
+  {Object.values(PRODUCTS)
+    .filter(
+      (product: any) =>
+        product &&
+        (product.image || product.images?.length)
+    )
+    .slice(0, 5)
+    .map((product: any) => (
+      <View key={product.id} style={styles.suggestionWrapper}>
+        {renderSuggestion(product.id)}
+      </View>
+    ))}
+</ScrollView>
               </View>
             </FadeInView>
           </>

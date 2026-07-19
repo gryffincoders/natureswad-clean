@@ -17,7 +17,6 @@ export const PRODUCTS = {
   'rtc_bbb': {
     id: 'rtc_bbb',
     name: 'Multi Millet Bisi Bele Bath Mix',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Ready-to-Cook Mixes',
     description: 'An aromatic, traditional spicy lentil and multi-millet rice alternative. Wholesome comfort food made quick.',
@@ -31,7 +30,6 @@ export const PRODUCTS = {
   'rtc_khichdi': {
     id: 'rtc_khichdi',
     name: 'Multi Millet Khichdi Mix',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Ready-to-Cook Mixes',
     description: 'A light, healing, and comforting blend of ancient millets and yellow moong dal for optimal digestive wellness.',
@@ -45,7 +43,7 @@ export const PRODUCTS = {
   'f4': {
     id: 'f4',
     name: 'Multi Millet Jowar Daliya',
-    image: require('../../assets/Jowar-Flour.png'), // Valid active file asset
+    image: require('../../assets/Jowar-Flour.png'), 
     category: 'Ready-to-Cook Mixes',
     description: 'Gluten-free, high-protein, dietary fiber and iron. Diabetic friendly, aids in weight loss.',
     variants: [{ label: '1 Kg', price: '₹160.00', originalPrice: '₹190.00' }],
@@ -57,26 +55,62 @@ export const PRODUCTS = {
   },
   'b1': {
     id: 'b1',
-    name: 'Multi Millet Idli & Upma Ready Mixes',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
-    image: null,
+    name: 'Rice Idly Mix & Upma Mixes',
+    image: require('../../assets/rice-idly-mix.png'),
     category: 'Ready-to-Cook Mixes',
-    description: 'Easy to prepare, healthy, tasty, and soft. Gluten free, diabetic friendly and quick to make.',
+    description: 'Easy to prepare, healthy, tasty, and soft. Traditional formulations quick to make.',
     variants: [
-      { label: 'Multi Millet Idli Mix 500g', price: '₹140.00', originalPrice: '₹180.00' },
-      { label: 'Vermicelli Upma Mix 500g', price: '₹120.00', originalPrice: '₹150.00' },
-      { label: 'Ragi Malt Vermicelli Upma Mix 500g', price: '₹130.00', originalPrice: '₹160.00' }
+      { label: 'Rice Idly Mix 1kg', price: '₹140.00', originalPrice: '₹180.00' },
+      { label: 'Premium Upma Mix 1kg', price: '₹150.00', originalPrice: '₹190.00' }
     ],
     nutritionalInfo: {
-      ingredients: ['Multi Millet Idli Mix', 'Vermicelli Upma Mix', 'Ragi Malt Vermicelli Upma Mix'],
-      keyNutrients: ['Idli Mix: Protein 10g, Carbs 68g. Upma Mix: Protein 11g, Carbs 68g (Per 100g)'],
-      healthBenefits: ['Low GI, nutrient dense', 'Full of calcium and fiber']
+      ingredients: ['Rice Idly Mix Components', 'Premium Upma Mix Components'],
+      keyNutrients: ['Idly Mix: Protein 6.8g, Carbs 76g. Upma Mix: Protein 9.2g, Carbs 72.5g (Per 100g)'],
+      healthBenefits: ['Soft, spongy traditional outputs', 'Wholesome everyday meals']
+    }
+  },
+  'premium_upma_mix': {
+    id: 'premium_upma_mix',
+    name: 'Premium Upma Mix',
+    image: require('../../assets/upma-mix.png'),
+    category: 'Ready-to-Cook Mixes',
+    description: 'Wholesome. Delicious. Traditional. Made with select grains and premium ingredients.',
+    variants: [{ label: '1 Kg', price: '₹150.00', originalPrice: '₹190.00' }],
+    nutritionalInfo: {
+      ingredients: ['Semolina (Wheat)', 'Edible Vegetable Oil', 'Roasted Bengal Gram', 'Dehydrated Vegetables (Carrot, Green Peas, Onion)', 'Split Black Gram', 'Cashew Nuts', 'Mustard', 'Curry Leaves', 'Green Chilli', 'Iodised Salt', 'Ginger', 'Acidity Regulator (INS 330)', 'Anticaking Agent (INS 551)'],
+      keyNutrients: ['Energy 385 kcal, Protein 9.2g, Carbohydrates 72.5g, Sugars 1.8g, Dietary Fibre 3.8g, Total Fat 6.5g, Saturated Fat 1.1g, Trans Fat 0g, Cholesterol 0mg, Sodium 780mg, Iron 1.5mg, Calcium 18mg (Per 100g Mix)'],
+      healthBenefits: ['No added preservatives', 'No added colours']
+    }
+  },
+  'rice_idly_mix': {
+    id: 'rice_idly_mix',
+    name: 'Rice Idly Mix',
+    image: require('../../assets/rice-idly-mix.png'),
+    category: 'Ready-to-Cook Mixes',
+    description: 'Soft. Spongy. Traditional idlis made easy with fine quality rice and dal.',
+    variants: [{ label: '1 Kg', price: '₹140.00', originalPrice: '₹180.00' }],
+    nutritionalInfo: {
+      ingredients: ['Rice', 'Black Gram (Urad Dal)', 'Bengal Gram (Chana Dal)', 'Fenugreek', 'Iodised Salt', 'Leavening Agent (INS 500(ii))'],
+      keyNutrients: ['Energy 345 kcal, Protein 6.8g, Carbohydrates 76.0g, Sugars 0g, Dietary Fibre 2.2g, Total Fat 1.2g, Saturated Fat 0.3g, Trans Fat 0g (Per 100g Mix)'],
+      healthBenefits: ['Naturally wholesome', 'No artificial colours or flavours']
+    }
+  },
+  'instant_dosa_mix': {
+    id: 'instant_dosa_mix',
+    name: 'Instant Dosa Mix',
+    image: require('../../assets/Dosa-mix.png'),
+    category: 'Ready-to-Cook Mixes',
+    description: 'Crispy. Delicious. Wholesome. A perfect blend of traditional grains and dals.',
+    variants: [{ label: '1 Kg', price: '₹150.00', originalPrice: '₹190.00' }],
+    nutritionalInfo: {
+      ingredients: ['Rice Flour', 'Black Gram (Urad Dal) Flour', 'Bengal Gram (Chana Dal)', 'Toor Dal', 'Flattened Rice (Poha)', 'Wheat Flour', 'Jowar (Sorghum) Flour', 'Fenugreek', 'Iodised Salt', 'Leavening Agents (INS 500(ii))', 'Acidity Regulator (INS 296)', 'Yeast'],
+      keyNutrients: ['Energy 340 kcal, Protein 9g, Carbohydrates 70g, Sugars 1g, Fat 1.5g, Saturated Fat 0.5g, Fibre 3g, Sodium 300mg (Per 100g Dry Mix)'],
+      healthBenefits: ['Goodness of multi grains & dals', 'No added preservatives']
     }
   },
   'rtc_pongal': {
     id: 'rtc_pongal',
     name: 'Multi Millet Pongal Mix',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Ready-to-Cook Mixes',
     description: 'Traditional South Indian comfort breakfast breakfast solution packed with clean nutrition and black pepper accents.',
@@ -90,7 +124,6 @@ export const PRODUCTS = {
   'rtc_dosa': {
     id: 'rtc_dosa',
     name: 'Multi Millet Dosa Mix',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Ready-to-Cook Mixes',
     description: 'Get perfectly crisp, golden multi-millet dosas with high fiber metrics and zero preparation hassle.',
@@ -104,7 +137,6 @@ export const PRODUCTS = {
   'rtc_adai': {
     id: 'rtc_adai',
     name: 'Multi Millet Adai Mix',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Ready-to-Cook Mixes',
     description: 'A thick, traditional, fiber-heavy multi-lentil pancake mix loaded with iron-rich grains.',
@@ -118,7 +150,6 @@ export const PRODUCTS = {
   'rtc_soup': {
     id: 'rtc_soup',
     name: 'Multi Millet Soup Mix',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Ready-to-Cook Mixes',
     description: 'A comforting, warm health soup powered by ancient grain minerals and bio-active plant seasonings.',
@@ -136,7 +167,7 @@ export const PRODUCTS = {
   'f2': {
     id: 'f2',
     name: 'Multi Millet Flour',
-    image: require('../../assets/Multi-millet-flour.png'), // Valid active file asset
+    image: require('../../assets/Multi-millet-flour.png'), 
     category: 'Healthy Breakfast Range',
     description: 'Gluten free, rich in dietary fiber, controls diabetes and helps in preventing celiac disease.',
     variants: [{ label: '1 Kg', price: '₹220.00', originalPrice: '₹260.00' }],
@@ -149,7 +180,6 @@ export const PRODUCTS = {
   'hb_muesli': {
     id: 'hb_muesli',
     name: 'Multi Millet Muesli',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Healthy Breakfast Range',
     description: 'Crisp rolled millets, pumpkin seeds, and clean fruit notes for a clean, structural breakfast base.',
@@ -163,7 +193,6 @@ export const PRODUCTS = {
   'hb_granola': {
     id: 'hb_granola',
     name: 'Millet Granola',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Healthy Breakfast Range',
     description: 'Oven-toasted clusters of honey-glazed organic whole millets blended with premium nuts.',
@@ -177,7 +206,6 @@ export const PRODUCTS = {
   'hb_porridge_inst': {
     id: 'hb_porridge_inst',
     name: 'Millet Instant Porridge',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Healthy Breakfast Range',
     description: 'Just add hot milk or water. Pre-cooked sprouted millet flour for ultra-fast morning nutrition.',
@@ -191,7 +219,6 @@ export const PRODUCTS = {
   'hb_cereal': {
     id: 'hb_cereal',
     name: 'Millet Breakfast Cereal',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Healthy Breakfast Range',
     description: 'Crisp whole-grain flakes formulated to offer clean alternative profiles over commercial sugar-loaded cereals.',
@@ -205,7 +232,6 @@ export const PRODUCTS = {
   'hb_pancake': {
     id: 'hb_pancake',
     name: 'Millet Pancake Mix',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Healthy Breakfast Range',
     description: 'Fluffy, delicious breakfast pancakes crafted completely without maida binders or wheat flour.',
@@ -223,7 +249,7 @@ export const PRODUCTS = {
   'snk_laddu': {
     id: 'snk_laddu',
     name: 'Multi Millet Jaggery Laddu',
-    image: require('../../assets/jaggery-laddu.png'), // Valid active file asset
+    image: require('../../assets/jaggery-laddu.png'), 
     category: 'Healthy Snacking Range',
     description: 'A nutritious sweet snack blending ancient grains, calcium-dense sesame, and iron-rich organic jaggery.',
     variants: [{ label: 'Pack of 4', price: '₹499.00', originalPrice: '₹699.00' }],
@@ -236,7 +262,6 @@ export const PRODUCTS = {
   'snk_cookies': {
     id: 'snk_cookies',
     name: 'Millet Cookies',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Healthy Snacking Range',
     description: 'Crisp, guilt-free bakery cookies prepared using real butter, whole grains, and zero palm oils.',
@@ -250,7 +275,6 @@ export const PRODUCTS = {
   'snk_murukku': {
     id: 'snk_murukku',
     name: 'Millet Murukku',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Healthy Snacking Range',
     description: 'Traditional crunchy South Indian snack baked or flash-fried cleanly in cold-pressed rice bran oil.',
@@ -264,7 +288,6 @@ export const PRODUCTS = {
   'snk_khakhra': {
     id: 'snk_khakhra',
     name: 'Millet Khakhra',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Healthy Snacking Range',
     description: 'Crisp, hand-pressed roasted flatbread crackers perfect for light snack hours at the office.',
@@ -278,7 +301,6 @@ export const PRODUCTS = {
   'snk_roasted': {
     id: 'snk_roasted',
     name: 'Millet Roasted Snacks',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Healthy Snacking Range',
     description: 'Non-fried, oil-popped puff millets tossed in mild native rock salt and herbal seasonings.',
@@ -292,7 +314,6 @@ export const PRODUCTS = {
   'snk_bars': {
     id: 'snk_bars',
     name: 'Millet Energy Bars',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Healthy Snacking Range',
     description: 'Cold-pressed snack bars packed with puffed grains and natural fruit binding matrixes.',
@@ -306,7 +327,6 @@ export const PRODUCTS = {
   'snk_chikki': {
     id: 'snk_chikki',
     name: 'Millet Chikki with Jaggery',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Healthy Snacking Range',
     description: 'Classic hard brittle snack bars combining popped ragi grains and melted organic jaggery syrup.',
@@ -320,7 +340,6 @@ export const PRODUCTS = {
   'snk_namkeen': {
     id: 'snk_namkeen',
     name: 'Millet Namkeen Mix',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Healthy Snacking Range',
     description: 'A crunchy, savory mixture of roasted millets, lentils, and nuts seasoned with classic chat spices.',
@@ -335,37 +354,61 @@ export const PRODUCTS = {
   // ==========================================
   // CATEGORY 4: BAKERY & CONVENIENCE FOODS
   // ==========================================
-  'cv_noodles': {
-    id: 'cv_noodles',
-    name: 'Multi Millet Noodles',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
-    image: null,
+  'millet_moringa_noodles': {
+    id: 'millet_moringa_noodles',
+    name: 'Millet Moringa Noodles',
+    image: require('../../assets/Moringa-noodles.png'),
     category: 'Bakery & Convenience Foods',
-    description: 'Healthy, non-fried instant noodles crafted from whole grains. Includes a natural spice pack.',
-    variants: [{ label: '150g', price: '₹95.00', originalPrice: '₹130.00' }],
+    description: 'A wholesome blend of millets and moringa for a nutritious and delicious meal.',
+    variants: [{ label: '100g', price: '₹95.00', originalPrice: '₹125.00' }],
     nutritionalInfo: {
-      ingredients: ['Foxtail Millet Flour', 'Little Millet Flour', 'Whole Wheat Flour (No Maida)'],
-      keyNutrients: ['Double the protein value of commercial instant noodles'],
-      healthBenefits: ['Child-safe convenient meal choice that limits fat storage']
+      ingredients: ['Moringa Powder', 'Sorghum', 'Foxtail Millet', 'Finger Millet', 'Emmer Wheat', 'Wheat', 'Salt', 'Edible Oil'],
+      keyNutrients: ['Energy 380 kcal, Protein 11g, Carbohydrates 72g, Sugars 3g, Total Fat 6g, Saturated Fat 2g, Dietary Fibre 8g, Sodium 450mg, Iron 4mg, Calcium 80mg (Per 100g)'],
+      healthBenefits: ['Rich in nutrients', 'Goodness of 5 super millets', 'No added preservatives']
     }
   },
-  'cv_pasta': {
-    id: 'cv_pasta',
-    name: 'Multi Millet Pasta',
-    image: require('../../assets/millet-pasta.png'), // Valid active file asset
+  'emmer_wheat_noodles': {
+    id: 'emmer_wheat_noodles',
+    name: 'Emmer Wheat Super Grains Noodles',
+    image: require('../../assets/emmer-wheat-noodles.png'),
     category: 'Bakery & Convenience Foods',
-    description: 'A clean gourmet choice for family dinners. Maida-free fusilli or penne pasta shapes.',
-    variants: [{ label: '500g', price: '₹349.00', originalPrice: '₹499.00' }],
+    description: 'A wholesome blend of ancient emmer wheat, wheat and jowar (sorghum) crafted for a nutritious meal.',
+    variants: [{ label: '100g', price: '₹95.00', originalPrice: '₹125.00' }],
     nutritionalInfo: {
-      ingredients: ['100% Multi Millet Flour Core Blend'],
-      keyNutrients: ['Protein 9g, Carbohydrate 67g (Per 100g)'],
-      healthBenefits: ['Limits post-meal sluggishness and guards colon transit paths']
+      ingredients: ['Emmer Wheat Flour', 'Wheat Flour (Atta)', 'Jowar (Sorghum) Flour', 'Edible Vegetable Oil', 'Salt'],
+      keyNutrients: ['Energy 380 kcal, Protein 13g, Carbohydrates 73g, Sugars 2g, Total Fat 6g, Saturated Fat 2g, Dietary Fibre 7g, Sodium 450mg, Iron 4.5mg, Calcium 70mg (Per 100g Dry Noodles)'],
+      healthBenefits: ['Good source of protein', 'Source of dietary fibre', 'No added preservatives']
+    }
+  },
+  'emmer_wheat_pasta': {
+    id: 'emmer_wheat_pasta',
+    name: 'Emmer Wheat Super Grains Pasta',
+    image: require('../../assets/emmer-wheat-pasta.png'),
+    category: 'Bakery & Convenience Foods',
+    description: 'A wholesome blend of ancient emmer wheat, wheat and jowar (sorghum) crafted for a nutritious meal.',
+    variants: [{ label: '200g', price: '₹150.00', originalPrice: '₹195.00' }],
+    nutritionalInfo: {
+      ingredients: ['Emmer Wheat Flour', 'Wheat Flour (Atta)', 'Jowar (Sorghum) Flour', 'Edible Vegetable Oil', 'Salt'],
+      keyNutrients: ['Energy 360 kcal, Protein 12g, Carbohydrates 72g, Sugars 3g, Total Fat 3g, Saturated Fat 0.5g, Dietary Fibre 6g, Sodium 200mg, Iron 4mg, Calcium 70mg (Per 100g Dry Pasta)'],
+      healthBenefits: ['Source of dietary fibre', 'Good source of protein', 'No added preservatives']
+    }
+  },
+  'millet_moringa_pasta': {
+    id: 'millet_moringa_pasta',
+    name: 'Millet Moringa Pasta',
+    image: require('../../assets/millet-moringa-pasta.png'),
+    category: 'Bakery & Convenience Foods',
+    description: 'A wholesome blend of millets and moringa for a nutritious and delicious meal.',
+    variants: [{ label: '200g', price: '₹160.00', originalPrice: '₹210.00' }],
+    nutritionalInfo: {
+      ingredients: ['Moringa Powder', 'Sorghum', 'Foxtail Millet', 'Finger Millet', 'Emmer Wheat', 'Wheat', 'Salt', 'Edible Oil'],
+      keyNutrients: ['Energy 370 kcal, Protein 12g, Carbohydrates 72g, Sugars 3g, Total Fat 4g, Saturated Fat 1.5g, Dietary Fibre 8g, Sodium 350mg, Iron 4mg, Calcium 50-90mg (Per 100g Dry Pasta)'],
+      healthBenefits: ['Rich in nutrients', 'Goodness of Moringa', 'Made with 5 super millets']
     }
   },
   'cv_macaroni': {
     id: 'cv_macaroni',
     name: 'Multi Millet Macaroni',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Bakery & Convenience Foods',
     description: 'Wholesome elbows made entirely from clean flour mixtures. Ideal for nutrient-packed healthy lunches.',
@@ -379,7 +422,6 @@ export const PRODUCTS = {
   'cv_rusk': {
     id: 'cv_rusk',
     name: 'Millet Rusk',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Bakery & Convenience Foods',
     description: 'Twice-baked crispy tea-time dipping rusks made using whole grains and zero hydrogenated vegetable fats.',
@@ -393,7 +435,6 @@ export const PRODUCTS = {
   'cv_bread_mix': {
     id: 'cv_bread_mix',
     name: 'Millet Bread Mix',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Bakery & Convenience Foods',
     description: 'Bake your own artisanal whole-grain artisan bread at home. Simple instructions, clean recipe layout.',
@@ -407,7 +448,6 @@ export const PRODUCTS = {
   'cv_pizza_base': {
     id: 'cv_pizza_base',
     name: 'Millet Pizza Base Mix',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Bakery & Convenience Foods',
     description: 'Bake customized, inflammation-free thin pizza crust bases using premium flour matrices.',
@@ -421,7 +461,6 @@ export const PRODUCTS = {
   'cv_vermicelli': {
     id: 'cv_vermicelli',
     name: 'Millet Vermicelli',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Bakery & Convenience Foods',
     description: 'Fine vermicelli threads made from ancient millet grains, ideal for healthy upmas or desserts.',
@@ -435,7 +474,6 @@ export const PRODUCTS = {
   'cv_rte_meals': {
     id: 'cv_rte_meals',
     name: 'Millet Ready-to-Eat Meals',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Bakery & Convenience Foods',
     description: 'Retort-packaged, shelf-stable nutritious meals. Heat and eat in under 60 seconds.',
@@ -453,7 +491,7 @@ export const PRODUCTS = {
   'wn_sugar_atta': {
     id: 'wn_sugar_atta',
     name: 'Sugar Management Atta',
-    image: require('../../assets/black-wheat.png'), // Valid active file asset
+    image: require('../../assets/black-wheat.png'), 
     category: 'Health & Wellness Range',
     description: 'Specialized 100% stone-ground anthocyanin-rich black wheat flour clinically optimized for slow carbohydrate discharge.',
     variants: [
@@ -469,7 +507,7 @@ export const PRODUCTS = {
   'wn_diabetic_mix': {
     id: 'wn_diabetic_mix',
     name: 'Diabetic-Friendly Millet Mix (Diabetic Care Bliss)',
-    image: require('../../assets/diabetic-care.png'), // Valid active file asset
+    image: require('../../assets/diabetic-care.png'), 
     category: 'Health & Wellness Range',
     description: 'Expertly designed blend of sprouted grains and medicinal herbs to support insulin baseline responses.',
     variants: [{ label: '1 Kg', price: '₹599.00', originalPrice: '₹699.00' }],
@@ -482,7 +520,6 @@ export const PRODUCTS = {
   'wn_weight_mix': {
     id: 'wn_weight_mix',
     name: 'Weight Management Millet Mix',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Health & Wellness Range',
     description: 'High-bulk, calorie-friendly meal substitute designed to prolong fullness and boost metabolic fat oxidation.',
@@ -496,7 +533,6 @@ export const PRODUCTS = {
   'wn_protein_mix': {
     id: 'wn_protein_mix',
     name: 'High-Protein Millet Nutrition Mix',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Health & Wellness Range',
     description: 'A high-powered functional drink powder combining ancient grains and vegan protein isolates.',
@@ -510,7 +546,6 @@ export const PRODUCTS = {
   'wn_baby_food': {
     id: 'wn_baby_food',
     name: 'Millet Baby Food',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Health & Wellness Range',
     description: 'A sprout-activated infant porridge mix completely free of white sugars, salts, or synthetic compounds.',
@@ -524,7 +559,6 @@ export const PRODUCTS = {
   'wn_women_mix': {
     id: 'wn_women_mix',
     name: 'Millet Women’s Health Mix',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Health & Wellness Range',
     description: 'A hormone-balancing nutritional blend fortified with high iron, calcium, and adaptogenic herbs.',
@@ -538,7 +572,6 @@ export const PRODUCTS = {
   'wn_senior_mix': {
     id: 'wn_senior_mix',
     name: 'Millet Senior Citizen Nutrition Mix',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Health & Wellness Range',
     description: 'An easily digestible, joint-supporting nutrition drink mix adjusted for low-impact digestive profiles.',
@@ -556,7 +589,6 @@ export const PRODUCTS = {
   'trad_ganji': {
     id: 'trad_ganji',
     name: 'Millet Ganji (Health Porridge Mix)',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Traditional Value-Added Products',
     description: 'A traditional household health drink powder designed to cool the body and restore natural energy.',
@@ -570,7 +602,6 @@ export const PRODUCTS = {
   'trad_ragi_malt': {
     id: 'trad_ragi_malt',
     name: 'Ragi Malt',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Traditional Value-Added Products',
     description: '100% sprouted finger millet malt powder. A rich, creamy traditional wellness beverage.',
@@ -584,7 +615,6 @@ export const PRODUCTS = {
   'trad_payasam': {
     id: 'trad_payasam',
     name: 'Millet Payasam Mix',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Traditional Value-Added Products',
     description: 'A clean, health-conscious take on the classic Indian festive dessert, powered by fine foxtail grains.',
@@ -598,7 +628,6 @@ export const PRODUCTS = {
   'trad_ladoo_ast': {
     id: 'trad_ladoo_ast',
     name: 'Millet Ladoo Assortment',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Traditional Value-Added Products',
     description: 'A gift-ready luxury collection box of variety multi-millet sweet ladoos formed with real cow ghee.',
@@ -612,7 +641,6 @@ export const PRODUCTS = {
   'trad_sweet_pongal': {
     id: 'trad_sweet_pongal',
     name: 'Millet Sweet Pongal Mix',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Traditional Value-Added Products',
     description: 'A sweet harvest delicacy premix mixing clean little grains and dark organic jaggery.',
@@ -623,10 +651,9 @@ export const PRODUCTS = {
       healthBenefits: ['Satisfies sweet cravings cleanly without driving insulin inflammation crashes']
     }
   },
-  'trad_inst_kanji': {
-    id: 'trad_inst_kanji',
+  'trad_sweet_kanji': {
+    id: 'trad_sweet_kanji',
     name: 'Millet Instant Kanji Mix',
-    // image: require('../../assets/placeholder.png'), // ✅ REMOVED MISSING ASSET LINK
     image: null,
     category: 'Traditional Value-Added Products',
     description: 'An ancient breakfast gruel mix optimized for quick workspace preparation. Highly grounding.',
